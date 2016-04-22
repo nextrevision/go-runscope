@@ -131,17 +131,17 @@ func TestNewBucket(t *testing.T) {
 	setup()
 	defer teardown()
 
-	input := &NewBucketRequest{
+	req := &newBucketRequest{
 		Name:     "Mobile Apps",
 		TeamUUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 	}
 
 	mux.HandleFunc("/buckets", func(w http.ResponseWriter, r *http.Request) {
-		v := new(NewBucketRequest)
+		v := new(newBucketRequest)
 		json.NewDecoder(r.Body).Decode(v)
 
-		if !reflect.DeepEqual(v, input) {
-			t.Errorf("Request body = %+v, want %+v", v, input)
+		if !reflect.DeepEqual(v, req) {
+			t.Errorf("Request body = %+v, want %+v", v, req)
 		}
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusCreated)
@@ -164,7 +164,7 @@ func TestNewBucket(t *testing.T) {
       }`)
 	})
 
-	bucket, resp, err := client.NewBucket("Mobile Apps", Team{UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0"})
+	bucket, resp, err := client.NewBucket("Mobile Apps", "7a7a0917-91d7-43ef-b8f4-fe31762167e0")
 	if err != nil {
 		t.Errorf("NewBucket returned error: %v", err)
 	}

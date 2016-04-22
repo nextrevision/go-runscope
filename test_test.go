@@ -215,7 +215,7 @@ func TestNewTest(t *testing.T) {
 	setup()
 	defer teardown()
 
-	input := &Test{
+	req := &Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
@@ -224,8 +224,8 @@ func TestNewTest(t *testing.T) {
 		v := new(Test)
 		json.NewDecoder(r.Body).Decode(v)
 
-		if !reflect.DeepEqual(v, input) {
-			t.Errorf("Request body = %+v, want %+v", v, input)
+		if !reflect.DeepEqual(v, req) {
+			t.Errorf("Request body = %+v, want %+v", v, req)
 		}
 		testMethod(t, r, "POST")
 		w.WriteHeader(http.StatusCreated)
@@ -241,7 +241,7 @@ func TestNewTest(t *testing.T) {
       }`)
 	})
 
-	test, resp, err := client.NewTest("abcde12345", input)
+	test, resp, err := client.NewTest("abcde12345", req)
 	if err != nil {
 		t.Errorf("NewTest returned error: %v", err)
 	}

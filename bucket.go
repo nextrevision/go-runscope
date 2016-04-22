@@ -2,7 +2,6 @@ package runscope
 
 import "net/http"
 
-// Bucket struct
 type Bucket struct {
 	Name      string `json:"name"`
 	AuthToken string `json:"auth_token"`
@@ -12,13 +11,11 @@ type Bucket struct {
 	VerifySSL bool   `json:"verify_ssl"`
 }
 
-// NewBucketRequest struct
-type NewBucketRequest struct {
+type newBucketRequest struct {
 	Name     string `json:"name"`
 	TeamUUID string `json:"team_uuid"`
 }
 
-// ListBuckets returns a listing of all buckets
 func (client *Client) ListBuckets() ([]Bucket, *http.Response, error) {
 	var buckets = []Bucket{}
 	resp, _, err := client.Get("buckets", &buckets)
@@ -28,7 +25,6 @@ func (client *Client) ListBuckets() ([]Bucket, *http.Response, error) {
 	return buckets, resp, err
 }
 
-// GetBucket returns a listing of all buckets
 func (client *Client) GetBucket(key string) (*Bucket, *http.Response, error) {
 	var bucket = Bucket{}
 	resp, _, err := client.Get("buckets/"+key, &bucket)
@@ -38,21 +34,19 @@ func (client *Client) GetBucket(key string) (*Bucket, *http.Response, error) {
 	return &bucket, resp, err
 }
 
-// NewBucket func
-func (client *Client) NewBucket(name string, team Team) (*Bucket, *http.Response, error) {
-	var bucket = Bucket{}
-	data := NewBucketRequest{
+func (client *Client) NewBucket(name string, teamUUID string) (*Bucket, *http.Response, error) {
+	var newBucket = Bucket{}
+	req := newBucketRequest{
 		Name:     name,
-		TeamUUID: team.UUID,
+		TeamUUID: teamUUID,
 	}
-	resp, _, err := client.Post("buckets", &data, &bucket)
+	resp, _, err := client.Post("buckets", &req, &newBucket)
 	if err != nil {
 		println(err.Error())
 	}
-	return &bucket, resp, err
+	return &newBucket, resp, err
 }
 
-// DeleteBucket func
 func (client *Client) DeleteBucket(key string) (*http.Response, error) {
 	resp, err := client.Delete("buckets/" + key)
 	if err != nil {

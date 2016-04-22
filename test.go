@@ -1,8 +1,10 @@
 package runscope
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
-// Test struct
 type Test struct {
 	Name                 string        `json:"name"`
 	ID                   string        `json:"id"`
@@ -17,7 +19,6 @@ type Test struct {
 	Schedules            []Schedule    `json:"schedules"`
 }
 
-// ListTests returns a listing of all tests
 func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error) {
 	var tests = []Test{}
 	resp, _, err := client.Get("buckets/"+bucketKey+"/tests", &tests)
@@ -27,7 +28,6 @@ func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error
 	return tests, resp, err
 }
 
-// GetTest returns a listing of all tests
 func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Response, error) {
 	var test = Test{}
 	resp, _, err := client.Get("buckets/"+bucketKey+"/tests/"+testID, &test)
@@ -37,9 +37,12 @@ func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Res
 	return &test, resp, err
 }
 
-// NewTest func
 func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Response, error) {
 	var newTest = Test{}
+	if test.Name == "" {
+		err := errors.New("Name must not be empty when creating new tests")
+		return &newTest, &http.Response{}, err
+	}
 	resp, _, err := client.Post("buckets/"+bucketKey+"/tests", &test, &newTest)
 	if err != nil {
 		println(err.Error())
@@ -47,7 +50,6 @@ func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Respon
 	return &newTest, resp, err
 }
 
-// DeleteTest func
 func (client *Client) DeleteTest(bucketKey string, testID string) (*http.Response, error) {
 	resp, err := client.Delete("buckets/" + bucketKey + "/tests/" + testID)
 	if err != nil {

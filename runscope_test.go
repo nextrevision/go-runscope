@@ -8,22 +8,15 @@ import (
 )
 
 var (
-	// mux is the HTTP request multiplexer used with the test server.
-	mux *http.ServeMux
-
-	// client is the GitHub client being tested.
+	mux    *http.ServeMux
 	client *Client
-
-	// server is a test HTTP server used to provide mock API responses.
 	server *httptest.Server
 )
 
 func setup() {
-	// test server
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
-	// github client configured to use test server
 	url, _ := url.Parse(server.URL)
 	client = NewClient(&Options{
 		Token:   "",
@@ -31,7 +24,6 @@ func setup() {
 	})
 }
 
-// teardown closes the test HTTP server.
 func teardown() {
 	server.Close()
 }

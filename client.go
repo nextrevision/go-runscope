@@ -8,29 +8,30 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
-// BaseURL struct
 const BaseURL = "https://api.runscope.com"
 
-// Options struct
 type Options struct {
 	BaseURL string
 	Token   string
 }
 
-// Client struct
 type Client struct {
 	req     *gorequest.SuperAgent
 	token   string
 	baseURL string
 }
 
-// Response struct
 type Response struct {
-	Data interface{} `json:"data"`
-	Meta Meta        `json:"meta"`
+	Data  interface{} `json:"data"`
+	Error Error       `json:"error"`
+	Meta  Meta        `json:"meta"`
 }
 
-// Meta struct
+type Error struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
 type Meta struct {
 	Status string `json:"status"`
 }
@@ -44,7 +45,6 @@ func newHTTPClient() *gorequest.SuperAgent {
 	return client
 }
 
-// NewClient returns a new Runscope Client object
 func NewClient(options *Options) *Client {
 	req := newHTTPClient()
 	if options.BaseURL == "" {
@@ -57,7 +57,6 @@ func NewClient(options *Options) *Client {
 	}
 }
 
-// Get returns a basic Response object
 func (client *Client) Get(path string, result interface{}) (*http.Response, *Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
@@ -72,7 +71,6 @@ func (client *Client) Get(path string, result interface{}) (*http.Response, *Res
 	return &_resp, &response, nil
 }
 
-// Post returns a basic Response object
 func (client *Client) Post(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
@@ -87,7 +85,6 @@ func (client *Client) Post(path string, data interface{}, result interface{}) (*
 	return &_resp, &response, nil
 }
 
-// Delete TODO
 func (client *Client) Delete(path string) (*http.Response, error) {
 	client.req.TargetType = "json"
 	resp, _, errs := client.req.Delete(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).EndBytes()
