@@ -258,6 +258,53 @@ func TestNewTest(t *testing.T) {
 	}
 }
 
+func TestUpdateTest(t *testing.T) {
+	setup()
+	defer teardown()
+
+	req := &UpdateTestRequest{
+		Name:        "Sample Test",
+		Description: "A new sample test",
+	}
+
+	mux.HandleFunc("/buckets/abcde12345/tests/12345", func(w http.ResponseWriter, r *http.Request) {
+		v := new(UpdateTestRequest)
+		json.NewDecoder(r.Body).Decode(v)
+
+		if !reflect.DeepEqual(v, req) {
+			t.Errorf("Request body = %+v, want %+v", v, req)
+		}
+		testMethod(t, r, "PUT")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w,
+			`{
+				"data": {
+					"name": "Sample Test",
+					"Description": "A new sample test"
+				},
+				"meta": {
+					"status": "success"
+				}
+			}`)
+	})
+
+	test, resp, err := client.UpdateTest("abcde12345", "12345", req)
+	if err != nil {
+		t.Errorf("UpdateTest returned error: %v", err)
+	}
+
+	want := &Test{
+		Name:        "Sample Test",
+		Description: "A new sample test",
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("UpdateTest did not return 200: %v", resp)
+	}
+	if !reflect.DeepEqual(test, want) {
+		t.Errorf("UpdateTest returned %+v, want %+v", test, want)
+	}
+}
+
 func TestDeleteTest(t *testing.T) {
 	setup()
 	defer teardown()

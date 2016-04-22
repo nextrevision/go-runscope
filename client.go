@@ -85,6 +85,20 @@ func (client *Client) Post(path string, data interface{}, result interface{}) (*
 	return &_resp, &response, nil
 }
 
+func (client *Client) Put(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
+	var response = Response{Data: result}
+	client.req.TargetType = "json"
+	resp, body, errs := client.req.Put(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
+	if errs != nil && len(errs) > 0 {
+		return nil, &response, errs[len(errs)-1]
+	}
+	if err := json.Unmarshal(body, &response); err != nil {
+		return nil, &response, err
+	}
+	_resp := http.Response(*resp)
+	return &_resp, &response, nil
+}
+
 func (client *Client) Delete(path string) (*http.Response, error) {
 	client.req.TargetType = "json"
 	resp, _, errs := client.req.Delete(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).EndBytes()

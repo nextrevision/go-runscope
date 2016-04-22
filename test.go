@@ -19,6 +19,13 @@ type Test struct {
 	Schedules            []Schedule    `json:"schedules"`
 }
 
+type UpdateTestRequest struct {
+	Name                 string   `json:"name,omitempty"`
+	Description          string   `json:"description,omitempty"`
+	DefaultEnvironmentID string   `json:"default_environment_id,omitempty"`
+	Steps                []string `json:"steps,omitempty"`
+}
+
 func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error) {
 	var tests = []Test{}
 	resp, _, err := client.Get("buckets/"+bucketKey+"/tests", &tests)
@@ -44,6 +51,15 @@ func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Respon
 		return &newTest, &http.Response{}, err
 	}
 	resp, _, err := client.Post("buckets/"+bucketKey+"/tests", &test, &newTest)
+	if err != nil {
+		println(err.Error())
+	}
+	return &newTest, resp, err
+}
+
+func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, *http.Response, error) {
+	var newTest = Test{}
+	resp, _, err := client.Put("buckets/"+bucketKey+"/tests/"+testID, &update, &newTest)
 	if err != nil {
 		println(err.Error())
 	}
