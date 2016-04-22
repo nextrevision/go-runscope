@@ -1,0 +1,4 @@
+test:
+  override:
+    - go vet
+    - go test -v
