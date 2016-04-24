@@ -2,6 +2,7 @@ package runscope
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -28,7 +29,8 @@ type UpdateTestRequest struct {
 
 func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error) {
 	var tests = []Test{}
-	resp, _, err := client.Get("buckets/"+bucketKey+"/tests", &tests)
+	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
+	resp, _, err := client.Get(path, &tests)
 	if err != nil {
 		println(err.Error())
 	}
@@ -37,7 +39,8 @@ func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error
 
 func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Response, error) {
 	var test = Test{}
-	resp, _, err := client.Get("buckets/"+bucketKey+"/tests/"+testID, &test)
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+	resp, _, err := client.Get(path, &test)
 	if err != nil {
 		println(err.Error())
 	}
@@ -50,7 +53,8 @@ func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Respon
 		err := errors.New("Name must not be empty when creating new tests")
 		return &newTest, &http.Response{}, err
 	}
-	resp, _, err := client.Post("buckets/"+bucketKey+"/tests", &test, &newTest)
+	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
+	resp, _, err := client.Post(path, &test, &newTest)
 	if err != nil {
 		println(err.Error())
 	}
@@ -59,7 +63,8 @@ func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Respon
 
 func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, *http.Response, error) {
 	var newTest = Test{}
-	resp, _, err := client.Put("buckets/"+bucketKey+"/tests/"+testID, &update, &newTest)
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+	resp, _, err := client.Put(path, &update, &newTest)
 	if err != nil {
 		println(err.Error())
 	}
@@ -67,7 +72,8 @@ func (client *Client) UpdateTest(bucketKey string, testID string, update *Update
 }
 
 func (client *Client) DeleteTest(bucketKey string, testID string) (*http.Response, error) {
-	resp, err := client.Delete("buckets/" + bucketKey + "/tests/" + testID)
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+	resp, err := client.Delete(path)
 	if err != nil {
 		println(err.Error())
 	}
