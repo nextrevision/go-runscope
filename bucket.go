@@ -16,13 +16,13 @@ type newBucketRequest struct {
 	TeamUUID string `json:"team_uuid"`
 }
 
-func (client *Client) ListBuckets() ([]Bucket, *http.Response, error) {
+func (client *Client) ListBuckets() (*[]Bucket, *http.Response, error) {
 	var buckets = []Bucket{}
 	resp, _, err := client.Get("buckets", &buckets)
 	if err != nil {
 		println(err.Error())
 	}
-	return buckets, resp, err
+	return &buckets, resp, err
 }
 
 func (client *Client) GetBucket(key string) (*Bucket, *http.Response, error) {

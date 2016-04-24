@@ -52,7 +52,7 @@ func TestListBuckets(t *testing.T) {
 		t.Errorf("ListBuckets returned error: %v", err)
 	}
 
-	want := []Bucket{
+	want := &[]Bucket{
 		Bucket{
 			Name:      "Lucky Notebook",
 			Default:   false,
