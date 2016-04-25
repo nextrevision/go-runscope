@@ -14,10 +14,40 @@ type Test struct {
 	CreatedAt            int           `json:"created_at"`
 	DefaultEnvironmentID string        `json:"default_environment_id"`
 	TriggerURL           string        `json:"trigger_url"`
-	LastRun              int           `json:"last_run"`
+	LastRun              LastRun       `json:"last_run"`
 	Steps                []Step        `json:"steps"`
 	Environments         []Environment `json:"environments"`
 	Schedules            []Schedule    `json:"schedules"`
+}
+
+type LastRun struct {
+	ID                 string   `json:"id"`
+	UUID               string   `json:"uuid"`
+	TestUUID           string   `json:"test_uuid"`
+	EnvironmentUUID    string   `json:"environment_uuid"`
+	EnvironmentName    string   `json:"environment_name"`
+	RemoteAgentUUID    string   `json:"remote_agent_uuid"`
+	RemoteAgentName    string   `json:"remote_agent_name"`
+	RemoteAgentVersion string   `json:"remote_agent_version"`
+	Status             string   `json:"status"`
+	CreatedAt          float64  `json:"created_at"`
+	FinishedAt         float64  `json:"finished_at"`
+	ErrorCount         int      `json:"error_count"`
+	MessageSuccess     int      `json:"message_success"`
+	Source             string   `json:"source"`
+	ExtractorCount     int      `json:"extractor_count"`
+	ExtractorSuccess   int      `json:"extractor_success"`
+	SubstituionCount   int      `json:"substitution_count"`
+	SubstituionSuccess int      `json:"substitution_success"`
+	ScriptCount        int      `json:"script_count"`
+	ScriptSuccess      int      `json:"script_success"`
+	AssertionCount     int      `json:"assertion_count"`
+	AssertionSuccess   int      `json:"assertion_success"`
+	BucketKey          string   `json:"bucket_key"`
+	Region             string   `json:"region"`
+	Messages           []string `json:"messages"`
+	MessageCount       int      `json:"message_count"`
+	TemplateUUIDs      []string `json:"template_uuids"`
 }
 
 type UpdateTestRequest struct {

@@ -175,6 +175,7 @@ func TestGetTest(t *testing.T) {
 				},
 				Variables: []Variable{},
 				Headers:   make(map[string][]string),
+				Form:      make(map[string][]string),
 			},
 		},
 		Schedules: []Schedule{},
