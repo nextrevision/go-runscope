@@ -42,12 +42,8 @@ func (client *Client) NewSchedule(bucketKey string, testID string, schedule *Sch
 	return &newSchedule, resp, err
 }
 
-func (client *Client) UpdateSchedule(bucketKey string, testID string, schedule *Schedule) (*Schedule, *http.Response, error) {
+func (client *Client) UpdateSchedule(bucketKey string, testID string, scheduleID string, schedule *Schedule) (*Schedule, *http.Response, error) {
 	var newSchedule = Schedule{}
-	if schedule.ID == "" {
-		err := errors.New("ID must not be empty when updating a schedule")
-		return &newSchedule, &http.Response{}, err
-	}
 	if schedule.EnvironmentID == "" {
 		err := errors.New("EnvironmentID must not be empty when updating a schedule")
 		return &newSchedule, &http.Response{}, err
@@ -56,7 +52,7 @@ func (client *Client) UpdateSchedule(bucketKey string, testID string, schedule *
 		err := errors.New("Interval must not be empty when updating schedule")
 		return &newSchedule, &http.Response{}, err
 	}
-	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, schedule.ID)
+	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
 	resp, err := client.Put(path, &schedule, &newSchedule)
 	return &newSchedule, resp, err
 }

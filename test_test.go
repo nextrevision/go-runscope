@@ -1,10 +1,7 @@
 package runscope
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
 )
 
@@ -12,36 +9,29 @@ func TestListTests(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets/abcde12345/tests", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		fmt.Fprint(w,
-			`{
-			    "data": [
-			        {
-			            "created_at": 1438828991,
-			            "created_by": {
-			                "email": "grace@example.com",
-			                "name": "Grace Hopper",
-			                "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
-			            },
-			            "default_environment_id": "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
-			            "description": "An internal API!",
-			            "name": "My Service",
-			            "id": "9b47981a-98fd-4dac-8f32-c05aa60b8caf"
-			        }
-			    ],
-			    "error": null,
-			    "meta": {
-			        "status": "success"
-			    }
-			}`)
-	})
-
-	tests, _, err := client.ListTests("abcde12345")
-	if err != nil {
-		t.Errorf("ListTests returned error: %v", err)
-	}
-
+	path := "/buckets/1/tests"
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": [
+    {
+      "created_at": 1438828991,
+      "created_by": {
+        "email": "grace@example.com",
+        "name": "Grace Hopper",
+        "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
+      },
+      "default_environment_id": "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
+      "description": "An internal API!",
+      "name": "My Service",
+      "id": "9b47981a-98fd-4dac-8f32-c05aa60b8caf"
+    }
+  ],
+  "error": null,
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &[]Test{
 		Test{
 			Name:                 "My Service",
@@ -56,99 +46,98 @@ func TestListTests(t *testing.T) {
 			},
 		},
 	}
-	if !reflect.DeepEqual(tests, want) {
-		t.Errorf("ListTests returned %+v, want %+v", tests, want)
+
+	handleGet(t, path, responseCode, responseData)
+
+	result, resp, err := client.ListTests("1")
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("ListTests returned error: %v", err)
 	}
+	testResponseData(t, result, want)
 }
 
 func TestGetTest(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets/abcde12345/tests/12345", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		fmt.Fprint(w,
-			`{
-					"data": {
-			        "created_at": 1438832081,
-			        "created_by": {
-			            "email": "grace@example.com",
-			            "name": "Grace Hopper",
-			            "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
-			        },
-			        "default_environment_id": "a50b63cc-c377-4823-9a95-8b91f12326f2",
-			        "description": null,
-			        "environments": [
-			            {
-			                "emails": {
-			                    "notify_all": false,
-			                    "notify_on": "all",
-			                    "notify_threshold": 1,
-			                    "recipients": []
-			                },
-			                "initial_variables": {
-			                    "base_url": "https://api.example.com"
-			                },
-			                "integrations": [
-			                    {
-			                        "description": "Pagerduty Account",
-			                        "integration_type": "pagerduty",
-			                        "id": "53776d9a-4f34-4f1f-9gff-c155dfb6692e"
-			                    }
-			                ],
-			                "name": "Test Settings",
-			                "parent_environment_id": null,
-			                "preserve_cookies": false,
-			                "regions": [
-			                    "us1"
-			                ],
-			                "remote_agents": [],
-			                "script": "",
-			                "test_id": "626a024c-f75e-4f57-82d4-104fe443c0f3",
-			                "id": "a50b63cc-c377-4823-9a95-8b91f12326f2",
-			                "verify_ssl": true,
-			                "webhooks": null
-			            }
-			        ],
-			        "last_run": null,
-			        "name": "Sample Name",
-			        "schedules": [],
-			        "steps": [
-			            {
-			                "assertions": [
-			                    {
-			                        "comparison": "is_equal",
-			                        "source": "response_status",
-			                        "value": 200
-			                    }
-			                ],
-			                "auth": {},
-			                "body": "",
-			                "form": {},
-			                "headers": {},
-			                "method": "GET",
-			                "note": "",
-			                "step_type": "request",
-			                "url": "https://yourapihere.com/",
-			                "id": "53f8e1fd-0989-491a-9f15-cc055f27d097",
-			                "variables": []
-			            }
-			        ],
-			        "trigger_url": "http://api.runscope.com/radar/b96ecee2-cce6-4d80-8f07-33ac22a22ebd/trigger",
-			        "id": "626a024c-f75e-4f57-82d4-104fe443c0f3"
-			    },
-			    "error": null,
-			    "meta": {
-			        "status": "success"
-			    }
-      }`)
-	})
-
-	test, _, err := client.GetTest("abcde12345", "12345")
-	if err != nil {
-		t.Errorf("GetTest returned error: %v", err)
-	}
-
+	path := "/buckets/1/tests/1"
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": {
+    "created_at": 1438832081,
+    "created_by": {
+      "email": "grace@example.com",
+      "name": "Grace Hopper",
+      "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
+    },
+    "default_environment_id": "a50b63cc-c377-4823-9a95-8b91f12326f2",
+    "description": null,
+    "environments": [
+      {
+        "emails": {
+          "notify_all": false,
+          "notify_on": "all",
+          "notify_threshold": 1,
+          "recipients": []
+        },
+        "initial_variables": {
+          "base_url": "https://api.example.com"
+        },
+        "integrations": [
+          {
+            "description": "Pagerduty Account",
+            "integration_type": "pagerduty",
+            "id": "53776d9a-4f34-4f1f-9gff-c155dfb6692e"
+          }
+        ],
+        "name": "Test Settings",
+        "parent_environment_id": null,
+        "preserve_cookies": false,
+        "regions": [
+          "us1"
+        ],
+        "remote_agents": [],
+        "script": "",
+        "test_id": "626a024c-f75e-4f57-82d4-104fe443c0f3",
+        "id": "a50b63cc-c377-4823-9a95-8b91f12326f2",
+        "verify_ssl": true,
+        "webhooks": null
+      }
+    ],
+    "last_run": null,
+    "name": "Sample Name",
+    "schedules": [],
+    "steps": [
+      {
+        "assertions": [
+          {
+            "comparison": "is_equal",
+            "source": "response_status",
+            "value": 200
+          }
+        ],
+        "auth": {},
+        "body": "",
+        "form": {},
+        "headers": {},
+        "method": "GET",
+        "note": "",
+        "step_type": "request",
+        "url": "https://yourapihere.com/",
+        "id": "53f8e1fd-0989-491a-9f15-cc055f27d097",
+        "variables": []
+      }
+    ],
+    "trigger_url": "http://api.runscope.com/radar/b96ecee2-cce6-4d80-8f07-33ac22a22ebd/trigger",
+    "id": "626a024c-f75e-4f57-82d4-104fe443c0f3"
+  },
+  "error": null,
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &Test{
 		Name: "Sample Name",
 		ID:   "626a024c-f75e-4f57-82d4-104fe443c0f3",
@@ -207,118 +196,98 @@ func TestGetTest(t *testing.T) {
 			},
 		},
 	}
-	if !reflect.DeepEqual(test, want) {
-		t.Errorf("GetTest returned %+v, want %+v", test, want)
+
+	handleGet(t, path, responseCode, responseData)
+
+	result, resp, err := client.GetTest("1", "1")
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("GetTest returned error: %v", err)
 	}
+	testResponseData(t, result, want)
 }
 
 func TestNewTest(t *testing.T) {
 	setup()
 	defer teardown()
 
-	req := &Test{
+	path := "/buckets/1/tests"
+	request := &Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
-
-	mux.HandleFunc("/buckets/abcde12345/tests", func(w http.ResponseWriter, r *http.Request) {
-		v := new(Test)
-		json.NewDecoder(r.Body).Decode(v)
-
-		if !reflect.DeepEqual(v, req) {
-			t.Errorf("Request body = %+v, want %+v", v, req)
-		}
-		testMethod(t, r, "POST")
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w,
-			`{
-         "data": {
-					  "name": "Sample Test",
-						"Description": "A new sample test"
-        },
-        "meta": {
-          "status": "success"
-        }
-      }`)
-	})
-
-	test, resp, err := client.NewTest("abcde12345", req)
-	if err != nil {
-		t.Errorf("NewTest returned error: %v", err)
-	}
-
+	responseCode := http.StatusCreated
+	responseData := `
+{
+  "data": {
+    "name": "Sample Test",
+    "Description": "A new sample test"
+  },
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
-	if resp.StatusCode != 201 {
-		t.Errorf("NewTest did not return 201: %v", resp)
+
+	handlePost(t, path, responseCode, responseData, new(Test), request)
+
+	result, resp, err := client.NewTest("1", request)
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("NewTest returned error: %v", err)
 	}
-	if !reflect.DeepEqual(test, want) {
-		t.Errorf("NewTest returned %+v, want %+v", test, want)
-	}
+	testResponseData(t, result, want)
 }
 
 func TestUpdateTest(t *testing.T) {
 	setup()
 	defer teardown()
 
-	req := &UpdateTestRequest{
+	path := "/buckets/1/tests/1"
+	request := &UpdateTestRequest{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
-
-	mux.HandleFunc("/buckets/abcde12345/tests/12345", func(w http.ResponseWriter, r *http.Request) {
-		v := new(UpdateTestRequest)
-		json.NewDecoder(r.Body).Decode(v)
-
-		if !reflect.DeepEqual(v, req) {
-			t.Errorf("Request body = %+v, want %+v", v, req)
-		}
-		testMethod(t, r, "PUT")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w,
-			`{
-				"data": {
-					"name": "Sample Test",
-					"Description": "A new sample test"
-				},
-				"meta": {
-					"status": "success"
-				}
-			}`)
-	})
-
-	test, resp, err := client.UpdateTest("abcde12345", "12345", req)
-	if err != nil {
-		t.Errorf("UpdateTest returned error: %v", err)
-	}
-
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": {
+    "name": "Sample Test",
+    "Description": "A new sample test"
+  },
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
-	if resp.StatusCode != 200 {
-		t.Errorf("UpdateTest did not return 200: %v", resp)
+
+	handlePut(t, path, responseCode, responseData, new(UpdateTestRequest), request)
+
+	result, resp, err := client.UpdateTest("1", "1", request)
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("UpdateTest returned error: %v", err)
 	}
-	if !reflect.DeepEqual(test, want) {
-		t.Errorf("UpdateTest returned %+v, want %+v", test, want)
-	}
+	testResponseData(t, result, want)
 }
 
 func TestDeleteTest(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets/abcde12345/tests/12345", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
-		w.WriteHeader(http.StatusNoContent)
-	})
+	path := "/buckets/1/tests/1"
+	responseCode := http.StatusNoContent
 
-	resp, err := client.DeleteTest("abcde12345", "12345")
-	if resp.StatusCode != 204 {
-		t.Errorf("DeleteTest did not return 204: %v", resp)
-	}
+	handleDelete(t, path, responseCode)
+
+	resp, err := client.DeleteTest("1", "1")
+	testStatusCode(t, resp, responseCode)
 	if err != nil {
 		t.Errorf("DeleteTest returned error: %v", err)
 	}
