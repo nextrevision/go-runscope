@@ -1,5 +1,10 @@
 package runscope
 
+import (
+	"fmt"
+	"net/http"
+)
+
 type Step struct {
 	StepType         string              `json:"step_type"`
 	ID               string              `json:"id"`
@@ -50,4 +55,38 @@ type Variable struct {
 
 type Script struct {
 	Value string `json:"value"`
+}
+
+func (client *Client) ListSteps(bucketKey string, testID string) (*[]Step, *http.Response, error) {
+	var steps = []Step{}
+	path := fmt.Sprintf("buckets/%s/tests/%s/steps", bucketKey, testID)
+	resp, err := client.Get(path, &steps)
+	return &steps, resp, err
+}
+
+func (client *Client) GetStep(bucketKey string, testID string, stepID string) (*Step, *http.Response, error) {
+	var step = Step{}
+	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
+	resp, err := client.Get(path, &step)
+	return &step, resp, err
+}
+
+func (client *Client) NewStep(bucketKey string, testID string, step *Step) (*Step, *http.Response, error) {
+	var newStep = Step{}
+	path := fmt.Sprintf("buckets/%s/tests/%s/steps", bucketKey, testID)
+	resp, err := client.Post(path, &step, &newStep)
+	return &newStep, resp, err
+}
+
+func (client *Client) UpdateStep(bucketKey string, testID string, stepID string, step *Step) (*Step, *http.Response, error) {
+	var newStep = Step{}
+	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
+	resp, err := client.Put(path, &step, &newStep)
+	return &newStep, resp, err
+}
+
+func (client *Client) DeleteStep(bucketKey string, testID string, stepID string) (*http.Response, error) {
+	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
+	resp, err := client.Delete(path)
+	return resp, err
 }
