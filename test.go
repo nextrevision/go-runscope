@@ -26,13 +26,13 @@ type UpdateTestRequest struct {
 	Steps                []string `json:"steps,omitempty"`
 }
 
-func (client *Client) ListTests(bucketKey string) ([]Test, *http.Response, error) {
+func (client *Client) ListTests(bucketKey string) (*[]Test, *http.Response, error) {
 	var tests = []Test{}
 	resp, _, err := client.Get("buckets/"+bucketKey+"/tests", &tests)
 	if err != nil {
 		println(err.Error())
 	}
-	return tests, resp, err
+	return &tests, resp, err
 }
 
 func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Response, error) {

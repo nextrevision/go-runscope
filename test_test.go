@@ -42,7 +42,7 @@ func TestListTests(t *testing.T) {
 		t.Errorf("ListTests returned error: %v", err)
 	}
 
-	want := []Test{
+	want := &[]Test{
 		Test{
 			Name:                 "My Service",
 			ID:                   "9b47981a-98fd-4dac-8f32-c05aa60b8caf",
