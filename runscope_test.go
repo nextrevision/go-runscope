@@ -1,9 +1,12 @@
 package runscope
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -24,12 +27,65 @@ func setup() {
 	})
 }
 
+func handleGet(t *testing.T, path string, code int, data string) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "GET" {
+			t.Errorf("Request method: %v, want %v", r.Method, "GET")
+		}
+		w.WriteHeader(code)
+		fmt.Fprint(w, data)
+	})
+}
+
+func handlePost(t *testing.T, path string, code int, data string, iface interface{}, req interface{}) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		json.NewDecoder(r.Body).Decode(iface)
+		if !reflect.DeepEqual(iface, req) {
+			t.Errorf("Request body = %+v, want %+v", iface, req)
+		}
+		testMethod(t, r, "POST")
+		w.WriteHeader(code)
+		fmt.Fprint(w, data)
+	})
+}
+
+func handlePut(t *testing.T, path string, code int, data string, iface interface{}, req interface{}) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		json.NewDecoder(r.Body).Decode(iface)
+		if !reflect.DeepEqual(iface, req) {
+			t.Errorf("Request body = %+v, want %+v", iface, req)
+		}
+		testMethod(t, r, "PUT")
+		w.WriteHeader(code)
+		fmt.Fprint(w, data)
+	})
+}
+
+func handleDelete(t *testing.T, path string, code int) {
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		w.WriteHeader(code)
+	})
+}
+
 func teardown() {
 	server.Close()
 }
 
 func testMethod(t *testing.T, r *http.Request, want string) {
-	if got := r.Method; got != want {
-		t.Errorf("Request method: %v, want %v", got, want)
+	if r.Method != want {
+		t.Errorf("Request method: %v, want %v", r.Method, want)
+	}
+}
+
+func testStatusCode(t *testing.T, r *http.Response, want int) {
+	if r != nil && r.StatusCode != want {
+		t.Errorf("Response status code was not %d: %d", want, r.StatusCode)
+	}
+}
+
+func testResponseData(t *testing.T, result interface{}, want interface{}) {
+	if !reflect.DeepEqual(result, want) {
+		t.Errorf("Response data returned %+v, want %+v", result, want)
 	}
 }

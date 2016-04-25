@@ -1,10 +1,7 @@
 package runscope
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
 )
 
@@ -12,46 +9,39 @@ func TestListBuckets(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		fmt.Fprint(w,
-			`{
-          "data": [
-              {
-                  "auth_token": null,
-                  "default": false,
-                  "key": "z20co0kgljjk",
-                  "name": "Lucky Notebook",
-                  "team": {
-                      "name": "Personal Team",
-                      "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
-                  },
-                  "verify_ssl": true
-              },
-              {
-                  "auth_token": null,
-                  "default": false,
-                  "key": "ov2f2tqifoov",
-                  "auth_token": "7n7n0917-91q7-43rs-o8s4-sr31762167r0",
-                  "name": "Mobile Apps",
-                  "team": {
-                      "name": "Mobile Team",
-                      "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
-                  },
-                  "verify_ssl": true
-              }
-          ],
-          "meta": {
-              "status": "success"
-          }
-      }`)
-	})
-
-	buckets, _, err := client.ListBuckets()
-	if err != nil {
-		t.Errorf("ListBuckets returned error: %v", err)
-	}
-
+	path := "/buckets"
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": [
+    {
+      "auth_token": null,
+      "default": false,
+      "key": "z20co0kgljjk",
+      "name": "Lucky Notebook",
+      "team": {
+        "name": "Personal Team",
+        "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
+      },
+      "verify_ssl": true
+    },
+    {
+      "auth_token": null,
+      "default": false,
+      "key": "ov2f2tqifoov",
+      "auth_token": "7n7n0917-91q7-43rs-o8s4-sr31762167r0",
+      "name": "Mobile Apps",
+      "team": {
+        "name": "Mobile Team",
+        "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
+      },
+      "verify_ssl": true
+    }
+  ],
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &[]Bucket{
 		Bucket{
 			Name:      "Lucky Notebook",
@@ -76,41 +66,40 @@ func TestListBuckets(t *testing.T) {
 			},
 		},
 	}
-	if !reflect.DeepEqual(buckets, want) {
-		t.Errorf("ListBuckets returned %+v, want %+v", buckets, want)
+
+	handleGet(t, path, responseCode, responseData)
+
+	result, resp, err := client.ListBuckets()
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("ListBuckets returned error: %v", err)
 	}
+	testResponseData(t, result, want)
 }
 
 func TestGetBucket(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets/abcde12345", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		fmt.Fprint(w,
-			`{
-         "data": {
-            "auth_token": null,
-            "default": false,
-            "key": "ov2f2tq1floq",
-            "name": "Mobile Apps",
-            "team": {
-              "name": "Mobile Team",
-              "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
-            },
-            "verify_ssl": true
-        },
-        "meta": {
-          "status": "success"
-        }
-      }`)
-	})
-
-	bucket, _, err := client.GetBucket("abcde12345")
-	if err != nil {
-		t.Errorf("GetBucket returned error: %v", err)
-	}
-
+	path := "/buckets/1"
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": {
+    "auth_token": null,
+    "default": false,
+    "key": "ov2f2tq1floq",
+    "name": "Mobile Apps",
+    "team": {
+      "name": "Mobile Team",
+      "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
+    },
+    "verify_ssl": true
+  },
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &Bucket{
 		Name:      "Mobile Apps",
 		Default:   false,
@@ -122,53 +111,44 @@ func TestGetBucket(t *testing.T) {
 			UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 		},
 	}
-	if !reflect.DeepEqual(bucket, want) {
-		t.Errorf("GetBucket returned %+v, want %+v", bucket, want)
+
+	handleGet(t, path, responseCode, responseData)
+
+	result, resp, err := client.GetBucket("1")
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("GetBucket returned error: %v", err)
 	}
+	testResponseData(t, result, want)
 }
 
 func TestNewBucket(t *testing.T) {
 	setup()
 	defer teardown()
 
-	req := &newBucketRequest{
+	path := "/buckets"
+	request := &newBucketRequest{
 		Name:     "Mobile Apps",
 		TeamUUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 	}
-
-	mux.HandleFunc("/buckets", func(w http.ResponseWriter, r *http.Request) {
-		v := new(newBucketRequest)
-		json.NewDecoder(r.Body).Decode(v)
-
-		if !reflect.DeepEqual(v, req) {
-			t.Errorf("Request body = %+v, want %+v", v, req)
-		}
-		testMethod(t, r, "POST")
-		w.WriteHeader(http.StatusCreated)
-		fmt.Fprint(w,
-			`{
-         "data": {
-            "auth_token": null,
-            "default": false,
-            "key": "ov2f2tq1floq",
-            "name": "Mobile Apps",
-            "team": {
-              "name": "Mobile Team",
-              "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
-            },
-            "verify_ssl": true
-        },
-        "meta": {
-          "status": "success"
-        }
-      }`)
-	})
-
-	bucket, resp, err := client.NewBucket("Mobile Apps", "7a7a0917-91d7-43ef-b8f4-fe31762167e0")
-	if err != nil {
-		t.Errorf("NewBucket returned error: %v", err)
-	}
-
+	responseCode := http.StatusCreated
+	responseData := `
+{
+  "data": {
+    "auth_token": null,
+    "default": false,
+    "key": "ov2f2tq1floq",
+    "name": "Mobile Apps",
+    "team": {
+      "name": "Mobile Team",
+      "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
+    },
+    "verify_ssl": true
+  },
+  "meta": {
+    "status": "success"
+  }
+}`
 	want := &Bucket{
 		Name:      "Mobile Apps",
 		Default:   false,
@@ -180,27 +160,28 @@ func TestNewBucket(t *testing.T) {
 			UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 		},
 	}
-	if resp.StatusCode != 201 {
-		t.Errorf("NewBucket did not return 201: %v", resp)
+
+	handlePost(t, path, responseCode, responseData, new(newBucketRequest), request)
+
+	result, resp, err := client.NewBucket("Mobile Apps", "7a7a0917-91d7-43ef-b8f4-fe31762167e0")
+	testStatusCode(t, resp, responseCode)
+	if err != nil {
+		t.Errorf("NewBucket returned error: %v", err)
 	}
-	if !reflect.DeepEqual(bucket, want) {
-		t.Errorf("NewBucket returned %+v, want %+v", bucket, want)
-	}
+	testResponseData(t, result, want)
 }
 
 func TestDeleteBucket(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc("/buckets/abcde12345", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "DELETE")
-		w.WriteHeader(http.StatusNoContent)
-	})
+	path := "/buckets/1"
+	responseCode := http.StatusNoContent
 
-	resp, err := client.DeleteBucket("abcde12345")
-	if resp.StatusCode != 204 {
-		t.Errorf("DeleteBucket did not return 204: %v", resp)
-	}
+	handleDelete(t, path, responseCode)
+
+	resp, err := client.DeleteBucket("1")
+	testStatusCode(t, resp, responseCode)
 	if err != nil {
 		t.Errorf("DeleteBucket returned error: %v", err)
 	}
