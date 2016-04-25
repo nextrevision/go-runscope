@@ -57,49 +57,49 @@ func NewClient(options *Options) *Client {
 	}
 }
 
-func (client *Client) Get(path string, result interface{}) (*http.Response, *Response, error) {
+func (client *Client) Get(path string, result interface{}) (*http.Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
 	resp, body, errs := client.req.Get(url).Set("Authorization", "Bearer "+client.token).EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return nil, &response, errs[len(errs)-1]
+		return nil, errs[len(errs)-1]
 	}
 	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, &response, err
+		return nil, err
 	}
 	_resp := http.Response(*resp)
-	return &_resp, &response, nil
+	return &_resp, nil
 }
 
-func (client *Client) Post(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
+func (client *Client) Post(path string, data interface{}, result interface{}) (*http.Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
 	resp, body, errs := client.req.Post(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return nil, &response, errs[len(errs)-1]
+		return nil, errs[len(errs)-1]
 	}
 	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, &response, err
+		return nil, err
 	}
 	_resp := http.Response(*resp)
-	return &_resp, &response, nil
+	return &_resp, nil
 }
 
-func (client *Client) Put(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
+func (client *Client) Put(path string, data interface{}, result interface{}) (*http.Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
 	resp, body, errs := client.req.Put(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return nil, &response, errs[len(errs)-1]
+		return nil, errs[len(errs)-1]
 	}
 	if err := json.Unmarshal(body, &response); err != nil {
-		return nil, &response, err
+		return nil, err
 	}
 	_resp := http.Response(*resp)
-	return &_resp, &response, nil
+	return &_resp, nil
 }
 
 func (client *Client) Delete(path string) (*http.Response, error) {

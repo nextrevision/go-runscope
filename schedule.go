@@ -16,20 +16,14 @@ type Schedule struct {
 func (client *Client) ListSchedules(bucketKey string, testID string) (*[]Schedule, *http.Response, error) {
 	var schedules = []Schedule{}
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules", bucketKey, testID)
-	resp, _, err := client.Get(path, &schedules)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &schedules)
 	return &schedules, resp, err
 }
 
 func (client *Client) GetSchedule(bucketKey string, testID string, scheduleID string) (*Schedule, *http.Response, error) {
 	var schedule = Schedule{}
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
-	resp, _, err := client.Get(path, &schedule)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &schedule)
 	return &schedule, resp, err
 }
 
@@ -44,10 +38,7 @@ func (client *Client) NewSchedule(bucketKey string, testID string, schedule *Sch
 		return &newSchedule, &http.Response{}, err
 	}
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules", bucketKey, testID)
-	resp, _, err := client.Post(path, &schedule, &newSchedule)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Post(path, &schedule, &newSchedule)
 	return &newSchedule, resp, err
 }
 
@@ -66,18 +57,12 @@ func (client *Client) UpdateSchedule(bucketKey string, testID string, schedule *
 		return &newSchedule, &http.Response{}, err
 	}
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, schedule.ID)
-	resp, _, err := client.Put(path, &schedule, &newSchedule)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Put(path, &schedule, &newSchedule)
 	return &newSchedule, resp, err
 }
 
 func (client *Client) DeleteSchedule(bucketKey string, testID string, scheduleID string) (*http.Response, error) {
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
 	resp, err := client.Delete(path)
-	if err != nil {
-		println(err.Error())
-	}
 	return resp, err
 }

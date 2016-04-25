@@ -60,20 +60,14 @@ type UpdateTestRequest struct {
 func (client *Client) ListTests(bucketKey string) (*[]Test, *http.Response, error) {
 	var tests = []Test{}
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
-	resp, _, err := client.Get(path, &tests)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &tests)
 	return &tests, resp, err
 }
 
 func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Response, error) {
 	var test = Test{}
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	resp, _, err := client.Get(path, &test)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &test)
 	return &test, resp, err
 }
 
@@ -84,28 +78,19 @@ func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Respon
 		return &newTest, &http.Response{}, err
 	}
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
-	resp, _, err := client.Post(path, &test, &newTest)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Post(path, &test, &newTest)
 	return &newTest, resp, err
 }
 
 func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, *http.Response, error) {
 	var newTest = Test{}
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	resp, _, err := client.Put(path, &update, &newTest)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Put(path, &update, &newTest)
 	return &newTest, resp, err
 }
 
 func (client *Client) DeleteTest(bucketKey string, testID string) (*http.Response, error) {
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 	resp, err := client.Delete(path)
-	if err != nil {
-		println(err.Error())
-	}
 	return resp, err
 }

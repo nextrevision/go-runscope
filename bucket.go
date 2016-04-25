@@ -22,20 +22,14 @@ type newBucketRequest struct {
 func (client *Client) ListBuckets() (*[]Bucket, *http.Response, error) {
 	var buckets = []Bucket{}
 	path := "buckets"
-	resp, _, err := client.Get(path, &buckets)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &buckets)
 	return &buckets, resp, err
 }
 
 func (client *Client) GetBucket(bucketKey string) (*Bucket, *http.Response, error) {
 	var bucket = Bucket{}
 	path := fmt.Sprintf("buckets/%s", bucketKey)
-	resp, _, err := client.Get(path, &bucket)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Get(path, &bucket)
 	return &bucket, resp, err
 }
 
@@ -46,18 +40,12 @@ func (client *Client) NewBucket(name string, teamUUID string) (*Bucket, *http.Re
 		TeamUUID: teamUUID,
 	}
 	path := "buckets"
-	resp, _, err := client.Post(path, &req, &newBucket)
-	if err != nil {
-		println(err.Error())
-	}
+	resp, err := client.Post(path, &req, &newBucket)
 	return &newBucket, resp, err
 }
 
 func (client *Client) DeleteBucket(bucketKey string) (*http.Response, error) {
 	path := fmt.Sprintf("buckets/%s", bucketKey)
 	resp, err := client.Delete(path)
-	if err != nil {
-		println(err.Error())
-	}
 	return resp, err
 }
