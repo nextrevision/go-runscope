@@ -1,6 +1,9 @@
 package runscope
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type Bucket struct {
 	Name      string `json:"name"`
@@ -18,16 +21,18 @@ type newBucketRequest struct {
 
 func (client *Client) ListBuckets() (*[]Bucket, *http.Response, error) {
 	var buckets = []Bucket{}
-	resp, _, err := client.Get("buckets", &buckets)
+	path := "buckets"
+	resp, _, err := client.Get(path, &buckets)
 	if err != nil {
 		println(err.Error())
 	}
 	return &buckets, resp, err
 }
 
-func (client *Client) GetBucket(key string) (*Bucket, *http.Response, error) {
+func (client *Client) GetBucket(bucketKey string) (*Bucket, *http.Response, error) {
 	var bucket = Bucket{}
-	resp, _, err := client.Get("buckets/"+key, &bucket)
+	path := fmt.Sprintf("buckets/%s", bucketKey)
+	resp, _, err := client.Get(path, &bucket)
 	if err != nil {
 		println(err.Error())
 	}
@@ -40,15 +45,17 @@ func (client *Client) NewBucket(name string, teamUUID string) (*Bucket, *http.Re
 		Name:     name,
 		TeamUUID: teamUUID,
 	}
-	resp, _, err := client.Post("buckets", &req, &newBucket)
+	path := "buckets"
+	resp, _, err := client.Post(path, &req, &newBucket)
 	if err != nil {
 		println(err.Error())
 	}
 	return &newBucket, resp, err
 }
 
-func (client *Client) DeleteBucket(key string) (*http.Response, error) {
-	resp, err := client.Delete("buckets/" + key)
+func (client *Client) DeleteBucket(bucketKey string) (*http.Response, error) {
+	path := fmt.Sprintf("buckets/%s", bucketKey)
+	resp, err := client.Delete(path)
 	if err != nil {
 		println(err.Error())
 	}

@@ -60,7 +60,8 @@ func NewClient(options *Options) *Client {
 func (client *Client) Get(path string, result interface{}) (*http.Response, *Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
-	resp, body, errs := client.req.Get(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).EndBytes()
+	url := fmt.Sprintf("%s/%s", client.baseURL, path)
+	resp, body, errs := client.req.Get(url).Set("Authorization", "Bearer "+client.token).EndBytes()
 	if errs != nil && len(errs) > 0 {
 		return nil, &response, errs[len(errs)-1]
 	}
@@ -74,7 +75,8 @@ func (client *Client) Get(path string, result interface{}) (*http.Response, *Res
 func (client *Client) Post(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
-	resp, body, errs := client.req.Post(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
+	url := fmt.Sprintf("%s/%s", client.baseURL, path)
+	resp, body, errs := client.req.Post(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
 	if errs != nil && len(errs) > 0 {
 		return nil, &response, errs[len(errs)-1]
 	}
@@ -88,7 +90,8 @@ func (client *Client) Post(path string, data interface{}, result interface{}) (*
 func (client *Client) Put(path string, data interface{}, result interface{}) (*http.Response, *Response, error) {
 	var response = Response{Data: result}
 	client.req.TargetType = "json"
-	resp, body, errs := client.req.Put(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
+	url := fmt.Sprintf("%s/%s", client.baseURL, path)
+	resp, body, errs := client.req.Put(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
 	if errs != nil && len(errs) > 0 {
 		return nil, &response, errs[len(errs)-1]
 	}
@@ -101,7 +104,8 @@ func (client *Client) Put(path string, data interface{}, result interface{}) (*h
 
 func (client *Client) Delete(path string) (*http.Response, error) {
 	client.req.TargetType = "json"
-	resp, _, errs := client.req.Delete(fmt.Sprintf("%s/%s", client.baseURL, path)).Set("Authorization", "Bearer "+client.token).EndBytes()
+	url := fmt.Sprintf("%s/%s", client.baseURL, path)
+	resp, _, errs := client.req.Delete(url).Set("Authorization", "Bearer "+client.token).EndBytes()
 	if errs != nil && len(errs) > 0 {
 		return nil, errs[len(errs)-1]
 	}
