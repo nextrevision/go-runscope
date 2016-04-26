@@ -12,7 +12,9 @@ type Person struct {
 	UUID  string `json:"uuid"`
 }
 
-type Integration struct {
+// TeamIntegration is a duplicate of Integration, except
+// Runscope uses "integration_type" here instead of "type"
+type TeamIntegration struct {
 	Description string `json:"description"`
 	Type        string `json:"integration_type"`
 	ID          string `json:"id"`

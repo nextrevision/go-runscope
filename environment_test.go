@@ -93,7 +93,7 @@ func TestListTestEnvironments(t *testing.T) {
 				"my_variable": "some value",
 				"one more":    "values",
 			},
-			Integrations: make([]Integration, 0),
+			Integrations: make([]TeamIntegration, 0),
 		},
 	}
 
@@ -195,7 +195,7 @@ func TestListSharedEnvironments(t *testing.T) {
 				"my_variable": "some value",
 				"one more":    "values",
 			},
-			Integrations: make([]Integration, 0),
+			Integrations: make([]TeamIntegration, 0),
 		},
 	}
 
@@ -294,7 +294,7 @@ func TestGetTestEnvironment(t *testing.T) {
 			"my_variable": "some value",
 			"one more":    "values",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handleGet(t, path, responseCode, responseData)
@@ -392,7 +392,7 @@ func TestGetSharedEnvironment(t *testing.T) {
 			"my_variable": "some value",
 			"one more":    "values",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handleGet(t, path, responseCode, responseData)
@@ -515,7 +515,7 @@ func TestNewTestEnvironment(t *testing.T) {
 		InitialVariables: map[string]string{
 			"my_variable": "some value",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handlePost(t, path, responseCode, responseData, new(Environment), request)
@@ -638,7 +638,7 @@ func TestNewSharedEnvironment(t *testing.T) {
 		InitialVariables: map[string]string{
 			"my_variable": "some value",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handlePost(t, path, responseCode, responseData, new(Environment), request)
@@ -762,7 +762,7 @@ func TestUpdateTestEnvironment(t *testing.T) {
 		InitialVariables: map[string]string{
 			"my_variable": "some value",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handlePut(t, path, responseCode, responseData, new(Environment), request)
@@ -886,7 +886,7 @@ func TestUpdateSharedEnvironment(t *testing.T) {
 		InitialVariables: map[string]string{
 			"my_variable": "some value",
 		},
-		Integrations: make([]Integration, 0),
+		Integrations: make([]TeamIntegration, 0),
 	}
 
 	handlePut(t, path, responseCode, responseData, new(Environment), request)
