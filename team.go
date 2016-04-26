@@ -1,5 +1,10 @@
 package runscope
 
+import (
+	"fmt"
+	"net/http"
+)
+
 type Team struct {
 	Name string `json:"name"`
 	UUID string `json:"uuid"`
@@ -19,4 +24,11 @@ type TeamIntegration struct {
 	Type        string `json:"integration_type"`
 	ID          string `json:"id"`
 	UUID        string `json:"uuid"`
+}
+
+func (client *Client) ListPeople(teamID string) (*[]Person, *http.Response, error) {
+	var people = []Person{}
+	path := fmt.Sprintf("teams/%s/people", teamID)
+	resp, err := client.Get(path, &people)
+	return &people, resp, err
 }
