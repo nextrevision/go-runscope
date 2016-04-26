@@ -186,8 +186,8 @@ func TestGetTest(t *testing.T) {
 				InitialVariables: map[string]string{
 					"base_url": "https://api.example.com",
 				},
-				Integrations: []Integration{
-					Integration{
+				Integrations: []TeamIntegration{
+					TeamIntegration{
 						ID:          "53776d9a-4f34-4f1f-9gff-c155dfb6692e",
 						Description: "Pagerduty Account",
 						Type:        "pagerduty",

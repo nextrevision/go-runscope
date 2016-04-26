@@ -18,7 +18,7 @@ type Environment struct {
 	Webhooks            []string          `json:"webhooks"`
 	Emails              Email             `json:"emails"`
 	InitialVariables    map[string]string `json:"initial_variables"`
-	Integrations        []Integration     `json:"integrations"`
+	Integrations        []TeamIntegration `json:"integrations"`
 }
 
 type Email struct {
