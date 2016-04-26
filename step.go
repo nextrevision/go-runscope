@@ -30,10 +30,14 @@ type Step struct {
 }
 
 type Assertion struct {
-	Source     string      `json:"source"`
-	Property   string      `json:"property"`
-	Comparison string      `json:"comparison"`
-	Value      interface{} `json:"value"`
+	Source      string      `json:"source"`
+	Property    string      `json:"property"`
+	Comparison  string      `json:"comparison"`
+	Value       interface{} `json:"value"`
+	Result      string      `json:"result,omitempty"`
+	TargetValue interface{} `json:"target_value,omitempty"`
+	ActualValue interface{} `json:"actual_value,omitempty"`
+	Error       string      `json:"error,omitempty"`
 }
 
 type Auth struct {
@@ -48,13 +52,19 @@ type Auth struct {
 }
 
 type Variable struct {
-	Name     string `json:"name"`
-	Source   string `json:"source"`
-	Property string `json:"property"`
+	Name     string      `json:"name"`
+	Source   string      `json:"source"`
+	Property string      `json:"property"`
+	Result   string      `json:"result,omitempty"`
+	Value    interface{} `json:"value,omitempty"`
+	Error    string      `json:"error,omitempty"`
 }
 
 type Script struct {
-	Value string `json:"value"`
+	Value  string `json:"value"`
+	Result string `json:"result,omitempty"`
+	Output string `json:"output,omitempty"`
+	Error  string `json:"error,omitempty"`
 }
 
 func (client *Client) ListSteps(bucketKey string, testID string) (*[]Step, *http.Response, error) {
