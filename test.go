@@ -1,9 +1,8 @@
 package runscope
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 type Test struct {
@@ -50,6 +49,11 @@ type LastRun struct {
 	TemplateUUIDs      []string `json:"template_uuids"`
 }
 
+type NewTestRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type UpdateTestRequest struct {
 	Name                 string   `json:"name,omitempty"`
 	Description          string   `json:"description,omitempty"`
@@ -57,40 +61,85 @@ type UpdateTestRequest struct {
 	Steps                []string `json:"steps,omitempty"`
 }
 
-func (client *Client) ListTests(bucketKey string) (*[]Test, *http.Response, error) {
+func (client *Client) ListTests(bucketKey string) (*[]Test, error) {
 	var tests = []Test{}
+
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
-	resp, err := client.Get(path, &tests)
-	return &tests, resp, err
-}
 
-func (client *Client) GetTest(bucketKey string, testID string) (*Test, *http.Response, error) {
-	var test = Test{}
-	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	resp, err := client.Get(path, &test)
-	return &test, resp, err
-}
-
-func (client *Client) NewTest(bucketKey string, test *Test) (*Test, *http.Response, error) {
-	var newTest = Test{}
-	if test.Name == "" {
-		err := errors.New("Name must not be empty when creating new tests")
-		return &newTest, &http.Response{}, err
+	content, err := client.Get(path)
+	if err != nil {
+		return &tests, err
 	}
+
+	err = unmarshal(content, &tests)
+	return &tests, err
+}
+
+func (client *Client) GetTest(bucketKey string, testID string) (*Test, error) {
+	var test = Test{}
+
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+
+	content, err := client.Get(path)
+	if err != nil {
+		return &test, err
+	}
+
+	err = unmarshal(content, &test)
+	return &test, err
+}
+
+func (client *Client) NewTest(bucketKey string, newTestRequest *NewTestRequest) (*Test, error) {
+	var test = Test{}
+
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
-	resp, err := client.Post(path, &test, &newTest)
-	return &newTest, resp, err
+	data, err := json.Marshal(newTestRequest)
+	if err != nil {
+		return &test, err
+	}
+
+	content, err := client.Post(path, data)
+	if err != nil {
+		return &test, err
+	}
+
+	err = unmarshal(content, &test)
+	return &test, err
 }
 
-func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, *http.Response, error) {
-	var newTest = Test{}
-	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	resp, err := client.Put(path, &update, &newTest)
-	return &newTest, resp, err
+func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
+	var test = Test{}
+
+	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
+
+	content, err := client.Post(path, data)
+	if err != nil {
+		return &test, err
+	}
+
+	err = unmarshal(content, &test)
+	return &test, err
 }
 
-func (client *Client) DeleteTest(bucketKey string, testID string) (*http.Response, error) {
+func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, error) {
+	var test = Test{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	resp, err := client.Delete(path)
-	return resp, err
+	data, err := json.Marshal(update)
+	if err != nil {
+		return &test, err
+	}
+
+	content, err := client.Put(path, data)
+	if err != nil {
+		return &test, err
+	}
+
+	err = unmarshal(content, &test)
+	return &test, err
+}
+
+func (client *Client) DeleteTest(bucketKey string, testID string) error {
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+	return client.Delete(path)
 }

@@ -1,9 +1,9 @@
 package runscope
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
 )
 
 type Schedule struct {
@@ -13,52 +13,87 @@ type Schedule struct {
 	EnvironmentID string `json:"environment_id"`
 }
 
-func (client *Client) ListSchedules(bucketKey string, testID string) (*[]Schedule, *http.Response, error) {
+func (client *Client) ListSchedules(bucketKey string, testID string) (*[]Schedule, error) {
 	var schedules = []Schedule{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules", bucketKey, testID)
-	resp, err := client.Get(path, &schedules)
-	return &schedules, resp, err
+	content, err := client.Get(path)
+	if err != nil {
+		return &schedules, err
+	}
+
+	err = unmarshal(content, &schedules)
+	return &schedules, err
 }
 
-func (client *Client) GetSchedule(bucketKey string, testID string, scheduleID string) (*Schedule, *http.Response, error) {
+func (client *Client) GetSchedule(bucketKey string, testID string, scheduleID string) (*Schedule, error) {
 	var schedule = Schedule{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
-	resp, err := client.Get(path, &schedule)
-	return &schedule, resp, err
+	content, err := client.Get(path)
+	if err != nil {
+		return &schedule, err
+	}
+
+	err = unmarshal(content, &schedule)
+	return &schedule, err
 }
 
-func (client *Client) NewSchedule(bucketKey string, testID string, schedule *Schedule) (*Schedule, *http.Response, error) {
+func (client *Client) NewSchedule(bucketKey string, testID string, schedule *Schedule) (*Schedule, error) {
 	var newSchedule = Schedule{}
+
 	if schedule.EnvironmentID == "" {
 		err := errors.New("EnvironmentID must not be empty when creating new schedules")
-		return &newSchedule, &http.Response{}, err
+		return &newSchedule, err
 	}
 	if schedule.Interval == "" {
 		err := errors.New("Interval must not be empty when creating new schedules")
-		return &newSchedule, &http.Response{}, err
+		return &newSchedule, err
 	}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules", bucketKey, testID)
-	resp, err := client.Post(path, &schedule, &newSchedule)
-	return &newSchedule, resp, err
+	data, err := json.Marshal(schedule)
+	if err != nil {
+		return &newSchedule, err
+	}
+
+	content, err := client.Post(path, data)
+	if err != nil {
+		return &newSchedule, err
+	}
+
+	err = unmarshal(content, &newSchedule)
+	return &newSchedule, err
 }
 
-func (client *Client) UpdateSchedule(bucketKey string, testID string, scheduleID string, schedule *Schedule) (*Schedule, *http.Response, error) {
+func (client *Client) UpdateSchedule(bucketKey string, testID string, scheduleID string, schedule *Schedule) (*Schedule, error) {
 	var newSchedule = Schedule{}
+
 	if schedule.EnvironmentID == "" {
 		err := errors.New("EnvironmentID must not be empty when updating a schedule")
-		return &newSchedule, &http.Response{}, err
+		return &newSchedule, err
 	}
 	if schedule.Interval == "" {
 		err := errors.New("Interval must not be empty when updating schedule")
-		return &newSchedule, &http.Response{}, err
+		return &newSchedule, err
 	}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
-	resp, err := client.Put(path, &schedule, &newSchedule)
-	return &newSchedule, resp, err
+	data, err := json.Marshal(schedule)
+	if err != nil {
+		return &newSchedule, err
+	}
+
+	content, err := client.Put(path, data)
+	if err != nil {
+		return &newSchedule, err
+	}
+
+	err = unmarshal(content, &newSchedule)
+	return &newSchedule, err
 }
 
-func (client *Client) DeleteSchedule(bucketKey string, testID string, scheduleID string) (*http.Response, error) {
+func (client *Client) DeleteSchedule(bucketKey string, testID string, scheduleID string) error {
 	path := fmt.Sprintf("buckets/%s/tests/%s/schedules/%s", bucketKey, testID, scheduleID)
-	resp, err := client.Delete(path)
-	return resp, err
+	return client.Delete(path)
 }

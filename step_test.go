@@ -97,8 +97,7 @@ func TestListSteps(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListSteps("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListSteps("1", "1")
 	if err != nil {
 		t.Errorf("ListSteps returned error: %v", err)
 	}
@@ -193,8 +192,7 @@ func TestGetStep(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetStep("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetStep("1", "1", "1")
 	if err != nil {
 		t.Errorf("GetStep returned error: %v", err)
 	}
@@ -323,8 +321,7 @@ func TestNewStep(t *testing.T) {
 
 	handlePost(t, path, responseCode, responseData, new(Step), request)
 
-	result, resp, err := client.NewStep("1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewStep("1", "1", request)
 	if err != nil {
 		t.Errorf("NewStep returned error: %v", err)
 	}
@@ -453,8 +450,7 @@ func TestUpdateStep(t *testing.T) {
 
 	handlePut(t, path, responseCode, responseData, new(Step), request)
 
-	result, resp, err := client.UpdateStep("1", "1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.UpdateStep("1", "1", "1", request)
 	if err != nil {
 		t.Errorf("UpdateStep returned error: %v", err)
 	}
@@ -470,8 +466,7 @@ func TestDeleteStep(t *testing.T) {
 
 	handleDelete(t, path, responseCode)
 
-	resp, err := client.DeleteStep("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	err := client.DeleteStep("1", "1", "1")
 	if err != nil {
 		t.Errorf("DeleteStep returned error: %v", err)
 	}

@@ -35,8 +35,7 @@ func TestListIntegrations(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListIntegrations("1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListIntegrations("1")
 	if err != nil {
 		t.Errorf("ListIntegrations returned error: %v", err)
 	}

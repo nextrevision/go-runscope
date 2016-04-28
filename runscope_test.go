@@ -78,12 +78,6 @@ func testMethod(t *testing.T, r *http.Request, want string) {
 	}
 }
 
-func testStatusCode(t *testing.T, r *http.Response, want int) {
-	if r != nil && r.StatusCode != want {
-		t.Errorf("Response status code was not %d: %d", want, r.StatusCode)
-	}
-}
-
 func testResponseData(t *testing.T, result interface{}, want interface{}) {
 	if !reflect.DeepEqual(result, want) {
 		t.Errorf("Response data returned %+v, want %+v", result, want)

@@ -1,9 +1,10 @@
 package runscope
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -57,52 +58,76 @@ func NewClient(options *Options) *Client {
 	}
 }
 
-func (client *Client) Get(path string, result interface{}) (*http.Response, error) {
-	var response = Response{Data: result}
-	client.req.TargetType = "json"
+func (client *Client) Get(path string) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-	resp, body, errs := client.req.Get(url).Set("Authorization", "Bearer "+client.token).EndBytes()
-	_resp := http.Response(*resp)
+
+	client.req.TargetType = "json"
+	resp, body, errs := client.req.Get(url).
+		Set("Authorization", "Bearer "+client.token).
+		EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return &_resp, errs[len(errs)-1]
+		return body, errs[len(errs)-1]
 	}
-	err := json.Unmarshal(body, &response)
-	return &_resp, err
+
+	err := checkStatusCode(resp.StatusCode)
+	return body, err
 }
 
-func (client *Client) Post(path string, data interface{}, result interface{}) (*http.Response, error) {
-	var response = Response{Data: result}
-	client.req.TargetType = "json"
+func (client *Client) Post(path string, data []byte) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-	resp, body, errs := client.req.Post(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
-	_resp := http.Response(*resp)
+
+	client.req.TargetType = "json"
+	resp, body, errs := client.req.Post(url).
+		Set("Authorization", "Bearer "+client.token).
+		Send(string(data)).
+		EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return &_resp, errs[len(errs)-1]
+		return body, errs[len(errs)-1]
 	}
-	err := json.Unmarshal(body, &response)
-	return &_resp, err
+
+	err := checkStatusCode(resp.StatusCode)
+	return body, err
 }
 
-func (client *Client) Put(path string, data interface{}, result interface{}) (*http.Response, error) {
-	var response = Response{Data: result}
-	client.req.TargetType = "json"
+func (client *Client) Put(path string, data []byte) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-	resp, body, errs := client.req.Put(url).Set("Authorization", "Bearer "+client.token).SendStruct(data).EndBytes()
-	_resp := http.Response(*resp)
+
+	client.req.TargetType = "json"
+	resp, body, errs := client.req.Put(url).
+		Set("Authorization", "Bearer "+client.token).
+		Send(string(data)).
+		EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return &_resp, errs[len(errs)-1]
+		return body, errs[len(errs)-1]
 	}
-	err := json.Unmarshal(body, &response)
-	return &_resp, err
+
+	err := checkStatusCode(resp.StatusCode)
+	return body, err
 }
 
-func (client *Client) Delete(path string) (*http.Response, error) {
-	client.req.TargetType = "json"
+func (client *Client) Delete(path string) error {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-	resp, _, errs := client.req.Delete(url).Set("Authorization", "Bearer "+client.token).EndBytes()
-	_resp := http.Response(*resp)
+
+	client.req.TargetType = "json"
+	resp, _, errs := client.req.Delete(url).
+		Set("Authorization", "Bearer "+client.token).
+		EndBytes()
 	if errs != nil && len(errs) > 0 {
-		return &_resp, errs[len(errs)-1]
+		return errs[len(errs)-1]
 	}
-	return &_resp, nil
+
+	err := checkStatusCode(resp.StatusCode)
+	return err
+}
+
+func checkStatusCode(code int) error {
+	ok, err := regexp.MatchString("^2[0-9]{2}$", fmt.Sprintf("%d", code))
+	if err != nil {
+		return err
+	}
+	if !ok {
+		message := fmt.Sprintf("Request did not match 2xx: %d", code)
+		return errors.New(message)
+	}
+	return nil
 }

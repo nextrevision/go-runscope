@@ -49,8 +49,7 @@ func TestListTests(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListTests("1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListTests("1")
 	if err != nil {
 		t.Errorf("ListTests returned error: %v", err)
 	}
@@ -199,8 +198,7 @@ func TestGetTest(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetTest("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetTest("1", "1")
 	if err != nil {
 		t.Errorf("GetTest returned error: %v", err)
 	}
@@ -212,7 +210,7 @@ func TestNewTest(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests"
-	request := &Test{
+	request := &NewTestRequest{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
@@ -232,10 +230,9 @@ func TestNewTest(t *testing.T) {
 		Description: "A new sample test",
 	}
 
-	handlePost(t, path, responseCode, responseData, new(Test), request)
+	handlePost(t, path, responseCode, responseData, new(NewTestRequest), request)
 
-	result, resp, err := client.NewTest("1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewTest("1", request)
 	if err != nil {
 		t.Errorf("NewTest returned error: %v", err)
 	}
@@ -269,8 +266,7 @@ func TestUpdateTest(t *testing.T) {
 
 	handlePut(t, path, responseCode, responseData, new(UpdateTestRequest), request)
 
-	result, resp, err := client.UpdateTest("1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.UpdateTest("1", "1", request)
 	if err != nil {
 		t.Errorf("UpdateTest returned error: %v", err)
 	}
@@ -286,8 +282,7 @@ func TestDeleteTest(t *testing.T) {
 
 	handleDelete(t, path, responseCode)
 
-	resp, err := client.DeleteTest("1", "1")
-	testStatusCode(t, resp, responseCode)
+	err := client.DeleteTest("1", "1")
 	if err != nil {
 		t.Errorf("DeleteTest returned error: %v", err)
 	}

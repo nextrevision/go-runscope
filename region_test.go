@@ -41,8 +41,7 @@ func TestListRegions(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListRegions()
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListRegions()
 	if err != nil {
 		t.Errorf("ListRegions returned error: %v", err)
 	}

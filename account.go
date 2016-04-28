@@ -1,7 +1,5 @@
 package runscope
 
-import "net/http"
-
 type Account struct {
 	Name      string  `json:"name"`
 	Email     string  `json:"email"`
@@ -11,9 +9,14 @@ type Account struct {
 	Teams     []Team  `json:"teams"`
 }
 
-func (client *Client) GetAccount() (*Account, *http.Response, error) {
+func (client *Client) GetAccount() (*Account, error) {
 	var account = Account{}
-	path := "account"
-	resp, err := client.Get(path, &account)
-	return &account, resp, err
+
+	content, err := client.Get("account")
+	if err != nil {
+		return &account, err
+	}
+
+	err = unmarshal(content, &account)
+	return &account, err
 }

@@ -35,8 +35,7 @@ func TestListPeople(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListPeople("1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListPeople("1")
 	if err != nil {
 		t.Errorf("ListPeople returned error: %v", err)
 	}

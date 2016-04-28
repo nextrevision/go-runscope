@@ -1,7 +1,5 @@
 package runscope
 
-import "net/http"
-
 type Regions struct {
 	Regions []Region `json:"regions"`
 }
@@ -13,9 +11,14 @@ type Region struct {
 	Hostname        string `json:"hostname"`
 }
 
-func (client *Client) ListRegions() (*Regions, *http.Response, error) {
+func (client *Client) ListRegions() (*Regions, error) {
 	var regions = Regions{}
-	path := "regions"
-	resp, err := client.Get(path, &regions)
-	return &regions, resp, err
+
+	content, err := client.Get("regions")
+	if err != nil {
+		return &regions, err
+	}
+
+	err = unmarshal(content, &regions)
+	return &regions, err
 }

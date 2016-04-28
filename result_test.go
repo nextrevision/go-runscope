@@ -70,8 +70,7 @@ func TestListResults(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListResults("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListResults("1", "1")
 	if err != nil {
 		t.Errorf("ListResults returned error: %v", err)
 	}
@@ -224,8 +223,7 @@ func TestGetResult(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetResult("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetResult("1", "1", "1")
 	if err != nil {
 		t.Errorf("GetResult returned error: %v", err)
 	}
@@ -378,8 +376,7 @@ func TestGetResultLatest(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetResultLatest("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetResultLatest("1", "1")
 	if err != nil {
 		t.Errorf("GetResultLatest returned error: %v", err)
 	}

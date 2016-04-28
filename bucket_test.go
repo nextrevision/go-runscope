@@ -69,8 +69,7 @@ func TestListBuckets(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListBuckets()
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListBuckets()
 	if err != nil {
 		t.Errorf("ListBuckets returned error: %v", err)
 	}
@@ -114,8 +113,7 @@ func TestGetBucket(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetBucket("1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetBucket("1")
 	if err != nil {
 		t.Errorf("GetBucket returned error: %v", err)
 	}
@@ -127,7 +125,7 @@ func TestNewBucket(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets"
-	request := &newBucketRequest{
+	request := &NewBucketRequest{
 		Name:     "Mobile Apps",
 		TeamUUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 	}
@@ -161,10 +159,9 @@ func TestNewBucket(t *testing.T) {
 		},
 	}
 
-	handlePost(t, path, responseCode, responseData, new(newBucketRequest), request)
+	handlePost(t, path, responseCode, responseData, new(NewBucketRequest), request)
 
-	result, resp, err := client.NewBucket("Mobile Apps", "7a7a0917-91d7-43ef-b8f4-fe31762167e0")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewBucket(request)
 	if err != nil {
 		t.Errorf("NewBucket returned error: %v", err)
 	}
@@ -180,8 +177,7 @@ func TestDeleteBucket(t *testing.T) {
 
 	handleDelete(t, path, responseCode)
 
-	resp, err := client.DeleteBucket("1")
-	testStatusCode(t, resp, responseCode)
+	err := client.DeleteBucket("1")
 	if err != nil {
 		t.Errorf("DeleteBucket returned error: %v", err)
 	}

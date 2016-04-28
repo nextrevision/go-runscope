@@ -49,8 +49,7 @@ func TestListSchedules(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListSchedules("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListSchedules("1", "1")
 	if err != nil {
 		t.Errorf("ListSchedules returned error: %v", err)
 	}
@@ -85,8 +84,7 @@ func TestGetSchedule(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetSchedule("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetSchedule("1", "1", "1")
 	if err != nil {
 		t.Errorf("GetSchedule returned error: %v", err)
 	}
@@ -124,8 +122,7 @@ func TestNewSchedule(t *testing.T) {
 
 	handlePost(t, path, responseCode, responseData, new(Schedule), request)
 
-	result, resp, err := client.NewSchedule("1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewSchedule("1", "1", request)
 	if err != nil {
 		t.Errorf("NewSchedule returned error: %v", err)
 	}
@@ -163,8 +160,7 @@ func TestUpdateSchedule(t *testing.T) {
 
 	handlePut(t, path, responseCode, responseData, new(Schedule), request)
 
-	result, resp, err := client.UpdateSchedule("1", "1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.UpdateSchedule("1", "1", "1", request)
 	if err != nil {
 		t.Errorf("UpdateSchedule returned error: %v", err)
 	}
@@ -180,8 +176,7 @@ func TestDeleteSchedule(t *testing.T) {
 
 	handleDelete(t, path, responseCode)
 
-	resp, err := client.DeleteSchedule("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	err := client.DeleteSchedule("1", "1", "1")
 	if err != nil {
 		t.Errorf("DeleteSchedule returned error: %v", err)
 	}

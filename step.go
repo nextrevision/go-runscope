@@ -1,8 +1,8 @@
 package runscope
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 type Step struct {
@@ -67,36 +67,70 @@ type Script struct {
 	Error  string `json:"error,omitempty"`
 }
 
-func (client *Client) ListSteps(bucketKey string, testID string) (*[]Step, *http.Response, error) {
+func (client *Client) ListSteps(bucketKey string, testID string) (*[]Step, error) {
 	var steps = []Step{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/steps", bucketKey, testID)
-	resp, err := client.Get(path, &steps)
-	return &steps, resp, err
+
+	content, err := client.Get(path)
+	if err != nil {
+		return &steps, err
+	}
+
+	err = unmarshal(content, &steps)
+	return &steps, err
 }
 
-func (client *Client) GetStep(bucketKey string, testID string, stepID string) (*Step, *http.Response, error) {
+func (client *Client) GetStep(bucketKey string, testID string, stepID string) (*Step, error) {
 	var step = Step{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
-	resp, err := client.Get(path, &step)
-	return &step, resp, err
+	content, err := client.Get(path)
+	if err != nil {
+		return &step, err
+	}
+
+	err = unmarshal(content, &step)
+	return &step, err
 }
 
-func (client *Client) NewStep(bucketKey string, testID string, step *Step) (*Step, *http.Response, error) {
+func (client *Client) NewStep(bucketKey string, testID string, step *Step) (*Step, error) {
 	var newStep = Step{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/steps", bucketKey, testID)
-	resp, err := client.Post(path, &step, &newStep)
-	return &newStep, resp, err
+	data, err := json.Marshal(step)
+	if err != nil {
+		return &newStep, err
+	}
+
+	content, err := client.Post(path, data)
+	if err != nil {
+		return &newStep, err
+	}
+
+	err = unmarshal(content, &newStep)
+	return &newStep, err
 }
 
-func (client *Client) UpdateStep(bucketKey string, testID string, stepID string, step *Step) (*Step, *http.Response, error) {
+func (client *Client) UpdateStep(bucketKey string, testID string, stepID string, step *Step) (*Step, error) {
 	var newStep = Step{}
+
 	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
-	resp, err := client.Put(path, &step, &newStep)
-	return &newStep, resp, err
+	data, err := json.Marshal(step)
+	if err != nil {
+		return &newStep, err
+	}
+
+	content, err := client.Put(path, data)
+	if err != nil {
+		return &newStep, err
+	}
+
+	err = unmarshal(content, &newStep)
+	return &newStep, err
 }
 
-func (client *Client) DeleteStep(bucketKey string, testID string, stepID string) (*http.Response, error) {
+func (client *Client) DeleteStep(bucketKey string, testID string, stepID string) error {
 	path := fmt.Sprintf("buckets/%s/tests/%s/steps/%s", bucketKey, testID, stepID)
-	resp, err := client.Delete(path)
-	return resp, err
+	return client.Delete(path)
 }

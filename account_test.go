@@ -49,8 +49,7 @@ func TestGetAccount(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetAccount()
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetAccount()
 	if err != nil {
 		t.Errorf("GetAccount returned error: %v", err)
 	}

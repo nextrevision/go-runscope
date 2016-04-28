@@ -99,8 +99,7 @@ func TestListTestEnvironments(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListTestEnvironments("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListTestEnvironments("1", "1")
 	if err != nil {
 		t.Errorf("ListTestEnvironments returned error: %v", err)
 	}
@@ -201,8 +200,7 @@ func TestListSharedEnvironments(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.ListSharedEnvironments("1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.ListSharedEnvironments("1")
 	if err != nil {
 		t.Errorf("ListSharedEnvironments returned error: %v", err)
 	}
@@ -299,8 +297,7 @@ func TestGetTestEnvironment(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetTestEnvironment("1", "1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetTestEnvironment("1", "1", "1")
 	if err != nil {
 		t.Errorf("GetTestEnvironment returned error: %v", err)
 	}
@@ -397,8 +394,7 @@ func TestGetSharedEnvironment(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, resp, err := client.GetSharedEnvironment("1", "1")
-	testStatusCode(t, resp, responseCode)
+	result, err := client.GetSharedEnvironment("1", "1")
 	if err != nil {
 		t.Errorf("GetSharedEnvironment returned error: %v", err)
 	}
@@ -520,8 +516,7 @@ func TestNewTestEnvironment(t *testing.T) {
 
 	handlePost(t, path, responseCode, responseData, new(Environment), request)
 
-	result, resp, err := client.NewTestEnvironment("1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewTestEnvironment("1", "1", request)
 	if err != nil {
 		t.Errorf("NewTestEnvironment returned error: %v", err)
 	}
@@ -643,8 +638,7 @@ func TestNewSharedEnvironment(t *testing.T) {
 
 	handlePost(t, path, responseCode, responseData, new(Environment), request)
 
-	result, resp, err := client.NewSharedEnvironment("1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.NewSharedEnvironment("1", request)
 	if err != nil {
 		t.Errorf("NewTestEnvironment returned error: %v", err)
 	}
@@ -767,8 +761,7 @@ func TestUpdateTestEnvironment(t *testing.T) {
 
 	handlePut(t, path, responseCode, responseData, new(Environment), request)
 
-	result, resp, err := client.UpdateTestEnvironment("1", "1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.UpdateTestEnvironment("1", "1", "1", request)
 	if err != nil {
 		t.Errorf("UpdateTestEnvironment returned error: %v", err)
 	}
@@ -891,8 +884,7 @@ func TestUpdateSharedEnvironment(t *testing.T) {
 
 	handlePut(t, path, responseCode, responseData, new(Environment), request)
 
-	result, resp, err := client.UpdateSharedEnvironment("1", "1", request)
-	testStatusCode(t, resp, responseCode)
+	result, err := client.UpdateSharedEnvironment("1", "1", request)
 	if err != nil {
 		t.Errorf("UpdateSharedEnvironment returned error: %v", err)
 	}
@@ -908,8 +900,7 @@ func TestDeleteEnvironment(t *testing.T) {
 
 	handleDelete(t, path, responseCode)
 
-	resp, err := client.DeleteEnvironment("1", "1")
-	testStatusCode(t, resp, responseCode)
+	err := client.DeleteEnvironment("1", "1")
 	if err != nil {
 		t.Errorf("DeleteEnvironment returned error: %v", err)
 	}

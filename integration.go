@@ -1,9 +1,6 @@
 package runscope
 
-import (
-	"fmt"
-	"net/http"
-)
+import "fmt"
 
 type Integration struct {
 	ID          string `json:"id"`
@@ -12,9 +9,15 @@ type Integration struct {
 	UUID        string `json:"uuid"`
 }
 
-func (client *Client) ListIntegrations(teamID string) (*[]Integration, *http.Response, error) {
+func (client *Client) ListIntegrations(teamID string) (*[]Integration, error) {
 	var integrations = []Integration{}
+
 	path := fmt.Sprintf("teams/%s/integrations", teamID)
-	resp, err := client.Get(path, &integrations)
-	return &integrations, resp, err
+	content, err := client.Get(path)
+	if err != nil {
+		return &integrations, err
+	}
+
+	err = unmarshal(content, &integrations)
+	return &integrations, err
 }
