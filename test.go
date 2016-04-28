@@ -107,6 +107,24 @@ func (client *Client) NewTest(bucketKey string, newTestRequest *NewTestRequest) 
 	return &test, err
 }
 
+func (client *Client) UpdateTest(bucketKey string, testID string, updateTestRequest *UpdateTestRequest) (*Test, error) {
+	var test = Test{}
+
+	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
+	data, err := json.Marshal(updateTestRequest)
+	if err != nil {
+		return &test, err
+	}
+
+	content, err := client.Put(path, data)
+	if err != nil {
+		return &test, err
+	}
+
+	err = unmarshal(content, &test)
+	return &test, err
+}
+
 func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
 	var test = Test{}
 
@@ -121,14 +139,10 @@ func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
 	return &test, err
 }
 
-func (client *Client) UpdateTest(bucketKey string, testID string, update *UpdateTestRequest) (*Test, error) {
+func (client *Client) ReimportTest(bucketKey string, testID string, data []byte) (*Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
-	data, err := json.Marshal(update)
-	if err != nil {
-		return &test, err
-	}
 
 	content, err := client.Put(path, data)
 	if err != nil {

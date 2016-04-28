@@ -2,7 +2,6 @@ package runscope
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 )
 
@@ -12,8 +11,7 @@ func unmarshal(content []byte, result interface{}) error {
 		return err
 	}
 	if response.Error.Message != "" {
-		message := fmt.Sprintf("%s: %+v", response.Error, response.Meta)
-		return errors.New(message)
+		return fmt.Errorf("%s: %+v", response.Error, response.Meta)
 	}
 	return nil
 }

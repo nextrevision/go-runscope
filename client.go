@@ -1,7 +1,6 @@
 package runscope
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -126,8 +125,7 @@ func checkStatusCode(code int) error {
 		return err
 	}
 	if !ok {
-		message := fmt.Sprintf("Request did not match 2xx: %d", code)
-		return errors.New(message)
+		return fmt.Errorf("Request did not match 2xx: %d", code)
 	}
 	return nil
 }
