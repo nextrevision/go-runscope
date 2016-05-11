@@ -19,7 +19,7 @@ type Step struct {
 	Scripts          []Script            `json:"scripts"`
 	Note             string              `json:"note"`
 	Duration         int                 `json:"duration"`
-	Comparision      string              `json:"comparision"`
+	Comparison       string              `json:"comparison"`
 	RightValue       string              `json:"right_value"`
 	LeftValue        string              `json:"left_value"`
 	Steps            []Step              `json:"steps"`
