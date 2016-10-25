@@ -16,7 +16,7 @@ type Step struct {
 	Assertions       []Assertion         `json:"assertions"`
 	Variables        []Variable          `json:"variables"`
 	Headers          map[string][]string `json:"headers"`
-	Scripts          []Script            `json:"scripts"`
+	Scripts          []string            `json:"scripts"`
 	Note             string              `json:"note"`
 	Duration         int                 `json:"duration"`
 	Comparison       string              `json:"comparison"`
