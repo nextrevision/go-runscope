@@ -44,9 +44,7 @@ func TestListSteps(t *testing.T) {
         ]
       },
       "scripts": [
-        {
-          "value": "log(\"This is a sample script\");"
-        }
+        "log(\"This is a sample script\");"
       ],
       "note": "get example data"
     }
@@ -86,10 +84,8 @@ func TestListSteps(t *testing.T) {
 					"*/*",
 				},
 			},
-			Scripts: []Script{
-				Script{
-					Value: "log(\"This is a sample script\");",
-				},
+			Scripts: []string{
+				"log(\"This is a sample script\");",
 			},
 			Note: "get example data",
 		},
@@ -142,9 +138,7 @@ func TestGetStep(t *testing.T) {
       ]
     },
     "scripts": [
-      {
-        "value": "log(\"This is a sample script\");"
-      }
+      "log(\"This is a sample script\");"
     ],
     "note": "get example data"
 	},
@@ -182,10 +176,8 @@ func TestGetStep(t *testing.T) {
 				"*/*",
 			},
 		},
-		Scripts: []Script{
-			Script{
-				Value: "log(\"This is a sample script\");",
-			},
+		Scripts: []string{
+			"log(\"This is a sample script\");",
 		},
 		Note: "get example data",
 	}
@@ -231,10 +223,8 @@ func TestNewStep(t *testing.T) {
 				"*/*",
 			},
 		},
-		Scripts: []Script{
-			Script{
-				Value: "log(\"This is a sample script\");",
-			},
+		Scripts: []string{
+			"log(\"This is a sample script\");",
 		},
 		Note: "get example data",
 	}
@@ -271,9 +261,7 @@ func TestNewStep(t *testing.T) {
       ]
     },
     "scripts": [
-      {
-        "value": "log(\"This is a sample script\");"
-      }
+      "log(\"This is a sample script\");"
     ],
     "note": "get example data"
   },
@@ -311,10 +299,8 @@ func TestNewStep(t *testing.T) {
 				"*/*",
 			},
 		},
-		Scripts: []Script{
-			Script{
-				Value: "log(\"This is a sample script\");",
-			},
+		Scripts: []string{
+			"log(\"This is a sample script\");",
 		},
 		Note: "get example data",
 	}
@@ -360,10 +346,8 @@ func TestUpdateStep(t *testing.T) {
 				"*/*",
 			},
 		},
-		Scripts: []Script{
-			Script{
-				Value: "log(\"This is a sample script\");",
-			},
+		Scripts: []string{
+			"log(\"This is a sample script\");",
 		},
 		Note: "get example data",
 	}
@@ -400,9 +384,7 @@ func TestUpdateStep(t *testing.T) {
       ]
     },
     "scripts": [
-      {
-        "value": "log(\"This is a sample script\");"
-      }
+      "log(\"This is a sample script\");"
     ],
     "note": "get example data"
   },
@@ -440,10 +422,8 @@ func TestUpdateStep(t *testing.T) {
 				"*/*",
 			},
 		},
-		Scripts: []Script{
-			Script{
-				Value: "log(\"This is a sample script\");",
-			},
+		Scripts: []string{
+			"log(\"This is a sample script\");",
 		},
 		Note: "get example data",
 	}
