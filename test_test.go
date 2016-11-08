@@ -56,6 +56,57 @@ func TestListTests(t *testing.T) {
 	testResponseData(t, result, want)
 }
 
+func TestListAllTests(t *testing.T) {
+	setup()
+	defer teardown()
+
+	path := "/buckets/1/tests"
+	responseCode := http.StatusOK
+	responseData := `
+{
+  "data": [
+    {
+      "created_at": 1438828991,
+      "created_by": {
+        "email": "grace@example.com",
+        "name": "Grace Hopper",
+        "id": "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9"
+      },
+      "default_environment_id": "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
+      "description": "An internal API!",
+      "name": "My Service",
+      "id": "9b47981a-98fd-4dac-8f32-c05aa60b8caf"
+    }
+  ],
+  "error": null,
+  "meta": {
+    "status": "success"
+  }
+}`
+	want := []Test{
+		Test{
+			Name:                 "My Service",
+			ID:                   "9b47981a-98fd-4dac-8f32-c05aa60b8caf",
+			Description:          "An internal API!",
+			DefaultEnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
+			CreatedAt:            1438828991,
+			CreatedBy: Person{
+				Name:  "Grace Hopper",
+				Email: "grace@example.com",
+				ID:    "4ee15ecc-7fe1-43cb-aa12-ef50420f2cf9",
+			},
+		},
+	}
+
+	handleGet(t, path, responseCode, responseData)
+
+	result, err := client.ListAllTests("1")
+	if err != nil {
+		t.Errorf("ListTests returned error: %v", err)
+	}
+	testResponseData(t, result, want)
+}
+
 func TestGetTest(t *testing.T) {
 	setup()
 	defer teardown()
