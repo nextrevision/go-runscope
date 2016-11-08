@@ -90,6 +90,33 @@ func (client *Client) ListTests(bucketKey string, options ListTestOptions) ([]Te
 	return tests, err
 }
 
+// ListAllTests returns all tests for a given bucket
+func (client *Client) ListAllTests(bucketKey string) ([]Test, error) {
+	var tests = []Test{}
+	count := 50
+	offset := 0
+
+	for {
+		t, err := client.ListTests(bucketKey, ListTestOptions{
+			Count:  count,
+			Offset: offset,
+		})
+		if err != nil {
+			return tests, err
+		}
+
+		tests = append(tests, t...)
+
+		if len(t) < count {
+			return tests, nil
+		}
+
+		offset += 50
+	}
+
+	return tests, nil
+}
+
 // GetTest returns details about a given test
 func (client *Client) GetTest(bucketKey string, testID string) (Test, error) {
 	var test = Test{}
