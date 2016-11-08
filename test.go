@@ -113,8 +113,6 @@ func (client *Client) ListAllTests(bucketKey string) ([]Test, error) {
 
 		offset += 50
 	}
-
-	return tests, nil
 }
 
 // GetTest returns details about a given test
