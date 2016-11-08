@@ -25,7 +25,7 @@ func TestListPeople(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Person{
+	want := []Person{
 		Person{
 			UUID:  "cf95026e-8951-4ae1-83a7-699243678490",
 			Name:  "Grace Hopper",

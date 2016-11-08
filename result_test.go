@@ -43,7 +43,7 @@ func TestListResults(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Result{
+	want := []Result{
 		Result{
 			AssertionsDefined: 2,
 			AssertionsFailed:  0,
@@ -157,7 +157,7 @@ func TestGetResult(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Result{
+	want := Result{
 		AssertionsDefined: 2,
 		AssertionsFailed:  0,
 		AssertionsPassed:  2,
@@ -310,7 +310,7 @@ func TestGetResultLatest(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Result{
+	want := Result{
 		AssertionsDefined: 2,
 		AssertionsFailed:  0,
 		AssertionsPassed:  2,

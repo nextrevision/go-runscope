@@ -28,7 +28,7 @@ func TestListRegions(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Regions{
+	want := Regions{
 		Regions: []Region{
 			Region{
 				Hostname:        "us1.runscope.net",

@@ -54,7 +54,7 @@ func TestListSteps(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Step{
+	want := []Step{
 		Step{
 			ID:       "b0ecd629-2b92-4kee-9f4e-877c160md9eb",
 			StepType: "request",
@@ -147,7 +147,7 @@ func TestGetStep(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Step{
+	want := Step{
 		ID:       "b0ecd629-2b92-4kee-9f4e-877c160md9eb",
 		StepType: "request",
 		Method:   "POST",
@@ -196,7 +196,7 @@ func TestNewStep(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/steps"
-	request := &Step{
+	request := Step{
 		StepType: "request",
 		Method:   "POST",
 		URL:      "https://{{base_url}}/example/path",
@@ -270,7 +270,7 @@ func TestNewStep(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Step{
+	want := Step{
 		ID:       "b0ecd629-2b92-4kee-9f4e-877c160md9eb",
 		StepType: "request",
 		Method:   "POST",
@@ -319,7 +319,7 @@ func TestUpdateStep(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/steps/1"
-	request := &Step{
+	request := Step{
 		StepType: "request",
 		Method:   "POST",
 		URL:      "https://{{base_url}}/example/path",
@@ -393,7 +393,7 @@ func TestUpdateStep(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Step{
+	want := Step{
 		ID:       "b0ecd629-2b92-4kee-9f4e-877c160md9eb",
 		StepType: "request",
 		Method:   "POST",

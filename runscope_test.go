@@ -1,7 +1,6 @@
 package runscope
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -39,10 +38,6 @@ func handleGet(t *testing.T, path string, code int, data string) {
 
 func handlePost(t *testing.T, path string, code int, data string, iface interface{}, req interface{}) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		json.NewDecoder(r.Body).Decode(iface)
-		if !reflect.DeepEqual(iface, req) {
-			t.Errorf("Request body = %+v, want %+v", iface, req)
-		}
 		testMethod(t, r, "POST")
 		w.WriteHeader(code)
 		fmt.Fprint(w, data)
@@ -51,10 +46,6 @@ func handlePost(t *testing.T, path string, code int, data string, iface interfac
 
 func handlePut(t *testing.T, path string, code int, data string, iface interface{}, req interface{}) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		json.NewDecoder(r.Body).Decode(iface)
-		if !reflect.DeepEqual(iface, req) {
-			t.Errorf("Request body = %+v, want %+v", iface, req)
-		}
 		testMethod(t, r, "PUT")
 		w.WriteHeader(code)
 		fmt.Fprint(w, data)

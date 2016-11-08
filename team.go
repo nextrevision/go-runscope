@@ -2,12 +2,14 @@ package runscope
 
 import "fmt"
 
+// Team represents a Runscope team
 type Team struct {
 	Name string `json:"name"`
 	ID   string `json:"id"`
 	UUID string `json:"uuid"`
 }
 
+// Person can't be defined by your labels
 type Person struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
@@ -24,15 +26,16 @@ type TeamIntegration struct {
 	UUID        string `json:"uuid"`
 }
 
-func (client *Client) ListPeople(teamID string) (*[]Person, error) {
+// ListPeople returns a listing of people
+func (client *Client) ListPeople(teamID string) ([]Person, error) {
 	var people = []Person{}
 
 	path := fmt.Sprintf("teams/%s/people", teamID)
 	content, err := client.Get(path)
 	if err != nil {
-		return &people, err
+		return people, err
 	}
 
 	err = unmarshal(content, &people)
-	return &people, err
+	return people, err
 }

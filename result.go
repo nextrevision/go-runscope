@@ -2,6 +2,7 @@ package runscope
 
 import "fmt"
 
+// Result represents the outcome of a test run
 type Result struct {
 	AssertionsDefined int       `json:"assertions_defined"`
 	AssertionsFailed  int       `json:"assertions_failed"`
@@ -26,6 +27,7 @@ type Result struct {
 	Requests          []Request `json:"requests"`
 }
 
+// Request represents the result of a request made by a given test
 type Request struct {
 	Result            string      `json:"result"`
 	URL               string      `json:"url"`
@@ -44,32 +46,35 @@ type Request struct {
 	Variables         []Variable  `json:"variables"`
 }
 
-func (client *Client) ListResults(bucketKey string, testID string) (*[]Result, error) {
+// ListResults returns all results for a given test
+func (client *Client) ListResults(bucketKey string, testID string) ([]Result, error) {
 	var results = []Result{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s/results", bucketKey, testID)
 	content, err := client.Get(path)
 	if err != nil {
-		return &results, err
+		return results, err
 	}
 
 	err = unmarshal(content, &results)
-	return &results, err
+	return results, err
 }
 
-func (client *Client) GetResult(bucketKey string, testID string, testRunID string) (*Result, error) {
+// GetResult returns a more detail result for a result ID
+func (client *Client) GetResult(bucketKey string, testID string, testRunID string) (Result, error) {
 	var result = Result{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s/results/%s", bucketKey, testID, testRunID)
 	content, err := client.Get(path)
 	if err != nil {
-		return &result, err
+		return result, err
 	}
 
 	err = unmarshal(content, &result)
-	return &result, err
+	return result, err
 }
 
-func (client *Client) GetResultLatest(bucketKey string, testID string) (*Result, error) {
+// GetResultLatest returns the last known result for a given test
+func (client *Client) GetResultLatest(bucketKey string, testID string) (Result, error) {
 	return client.GetResult(bucketKey, testID, "latest")
 }

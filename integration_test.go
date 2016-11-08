@@ -25,7 +25,7 @@ func TestListIntegrations(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Integration{
+	want := []Integration{
 		Integration{
 			UUID:        "cf95026e-8951-4ae1-83a7-699243678490",
 			Type:        "pagerduty",
