@@ -39,7 +39,7 @@ for _, bucket := range *buckets {
 To list all tests in a bucket:
 
 ```
-tests, _ := client.ListTests(bucket.Key)
+tests, _ := client.ListTests(bucket.Key, ListTestOptions{})
 for _, test := range *tests {
   println(test.Name)
 }

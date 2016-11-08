@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Test ...
 type Test struct {
 	Name                 string        `json:"name"`
 	ID                   string        `json:"id"`
@@ -19,6 +20,7 @@ type Test struct {
 	Schedules            []Schedule    `json:"schedules"`
 }
 
+// LastRun represents the last result of a test
 type LastRun struct {
 	ID                 string   `json:"id"`
 	UUID               string   `json:"uuid"`
@@ -49,11 +51,13 @@ type LastRun struct {
 	TemplateUUIDs      []string `json:"template_uuids"`
 }
 
+// NewTestRequest ...
 type NewTestRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
+// UpdateTestRequest ...
 type UpdateTestRequest struct {
 	Name                 string   `json:"name,omitempty"`
 	Description          string   `json:"description,omitempty"`
@@ -61,10 +65,21 @@ type UpdateTestRequest struct {
 	Steps                []string `json:"steps,omitempty"`
 }
 
-func (client *Client) ListTests(bucketKey string) (*[]Test, error) {
+// ListTestOptions ...
+type ListTestOptions struct {
+	Count  int
+	Offset int
+}
+
+// ListTests returns a slice of Tests for a given bucket
+func (client *Client) ListTests(bucketKey string, options ListTestOptions) (*[]Test, error) {
 	var tests = []Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
+
+	if options.Count != 0 {
+		path = fmt.Sprintf("%s?count=%d&offset=%d", path, options.Count, options.Offset)
+	}
 
 	content, err := client.Get(path)
 	if err != nil {
@@ -75,6 +90,7 @@ func (client *Client) ListTests(bucketKey string) (*[]Test, error) {
 	return &tests, err
 }
 
+// GetTest returns details about a given test
 func (client *Client) GetTest(bucketKey string, testID string) (*Test, error) {
 	var test = Test{}
 
@@ -89,6 +105,7 @@ func (client *Client) GetTest(bucketKey string, testID string) (*Test, error) {
 	return &test, err
 }
 
+// NewTest creates a new test in a given bucket
 func (client *Client) NewTest(bucketKey string, newTestRequest *NewTestRequest) (*Test, error) {
 	var test = Test{}
 
@@ -107,6 +124,7 @@ func (client *Client) NewTest(bucketKey string, newTestRequest *NewTestRequest) 
 	return &test, err
 }
 
+// UpdateTest modifies an existing test in a given bucket
 func (client *Client) UpdateTest(bucketKey string, testID string, updateTestRequest *UpdateTestRequest) (*Test, error) {
 	var test = Test{}
 
@@ -125,6 +143,7 @@ func (client *Client) UpdateTest(bucketKey string, testID string, updateTestRequ
 	return &test, err
 }
 
+// ImportTest creates a test for a given bucket with a JSON payload
 func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
 	var test = Test{}
 
@@ -139,6 +158,7 @@ func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
 	return &test, err
 }
 
+// ReimportTest updates an existing test for a given bucket with a JSON payload
 func (client *Client) ReimportTest(bucketKey string, testID string, data []byte) (*Test, error) {
 	var test = Test{}
 
@@ -153,6 +173,7 @@ func (client *Client) ReimportTest(bucketKey string, testID string, data []byte)
 	return &test, err
 }
 
+// DeleteTest removes a test from a bucket
 func (client *Client) DeleteTest(bucketKey string, testID string) error {
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 	return client.Delete(path)
