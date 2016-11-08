@@ -1,5 +1,6 @@
 package runscope
 
+// Account represents a Runscope Account
 type Account struct {
 	Name      string  `json:"name"`
 	Email     string  `json:"email"`
@@ -9,14 +10,16 @@ type Account struct {
 	Teams     []Team  `json:"teams"`
 }
 
-func (client *Client) GetAccount() (*Account, error) {
+// GetAccount returns the account associated with the token used
+// to perform the request
+func (client *Client) GetAccount() (Account, error) {
 	var account = Account{}
 
 	content, err := client.Get("account")
 	if err != nil {
-		return &account, err
+		return account, err
 	}
 
 	err = unmarshal(content, &account)
-	return &account, err
+	return account, err
 }

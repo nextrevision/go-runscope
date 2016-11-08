@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Test ...
+// Test represents a Runscope test
 type Test struct {
 	Name                 string        `json:"name"`
 	ID                   string        `json:"id"`
@@ -51,13 +51,13 @@ type LastRun struct {
 	TemplateUUIDs      []string `json:"template_uuids"`
 }
 
-// NewTestRequest ...
+// NewTestRequest represents all parameters for creating a new test
 type NewTestRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-// UpdateTestRequest ...
+// UpdateTestRequest represents all parameters for updating an existing test
 type UpdateTestRequest struct {
 	Name                 string   `json:"name,omitempty"`
 	Description          string   `json:"description,omitempty"`
@@ -65,14 +65,14 @@ type UpdateTestRequest struct {
 	Steps                []string `json:"steps,omitempty"`
 }
 
-// ListTestOptions ...
+// ListTestOptions are parameters for modifying the tests returned
 type ListTestOptions struct {
 	Count  int
 	Offset int
 }
 
 // ListTests returns a slice of Tests for a given bucket
-func (client *Client) ListTests(bucketKey string, options ListTestOptions) (*[]Test, error) {
+func (client *Client) ListTests(bucketKey string, options ListTestOptions) ([]Test, error) {
 	var tests = []Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
@@ -83,94 +83,94 @@ func (client *Client) ListTests(bucketKey string, options ListTestOptions) (*[]T
 
 	content, err := client.Get(path)
 	if err != nil {
-		return &tests, err
+		return tests, err
 	}
 
 	err = unmarshal(content, &tests)
-	return &tests, err
+	return tests, err
 }
 
 // GetTest returns details about a given test
-func (client *Client) GetTest(bucketKey string, testID string) (*Test, error) {
+func (client *Client) GetTest(bucketKey string, testID string) (Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 
 	content, err := client.Get(path)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	err = unmarshal(content, &test)
-	return &test, err
+	return test, err
 }
 
 // NewTest creates a new test in a given bucket
-func (client *Client) NewTest(bucketKey string, newTestRequest *NewTestRequest) (*Test, error) {
+func (client *Client) NewTest(bucketKey string, newTestRequest NewTestRequest) (Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
-	data, err := json.Marshal(newTestRequest)
+	data, err := json.Marshal(&newTestRequest)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	content, err := client.Post(path, data)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	err = unmarshal(content, &test)
-	return &test, err
+	return test, err
 }
 
 // UpdateTest modifies an existing test in a given bucket
-func (client *Client) UpdateTest(bucketKey string, testID string, updateTestRequest *UpdateTestRequest) (*Test, error) {
+func (client *Client) UpdateTest(bucketKey string, testID string, updateTestRequest UpdateTestRequest) (Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 	data, err := json.Marshal(updateTestRequest)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	content, err := client.Put(path, data)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	err = unmarshal(content, &test)
-	return &test, err
+	return test, err
 }
 
 // ImportTest creates a test for a given bucket with a JSON payload
-func (client *Client) ImportTest(bucketKey string, data []byte) (*Test, error) {
+func (client *Client) ImportTest(bucketKey string, data []byte) (Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests", bucketKey)
 
 	content, err := client.Post(path, data)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	err = unmarshal(content, &test)
-	return &test, err
+	return test, err
 }
 
 // ReimportTest updates an existing test for a given bucket with a JSON payload
-func (client *Client) ReimportTest(bucketKey string, testID string, data []byte) (*Test, error) {
+func (client *Client) ReimportTest(bucketKey string, testID string, data []byte) (Test, error) {
 	var test = Test{}
 
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 
 	content, err := client.Put(path, data)
 	if err != nil {
-		return &test, err
+		return test, err
 	}
 
 	err = unmarshal(content, &test)
-	return &test, err
+	return test, err
 }
 
 // DeleteTest removes a test from a bucket

@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Bucket represents a Runscope bucket for grouping tests
 type Bucket struct {
 	Name      string `json:"name"`
 	AuthToken string `json:"auth_token"`
@@ -14,53 +15,58 @@ type Bucket struct {
 	VerifySSL bool   `json:"verify_ssl"`
 }
 
+// NewBucketRequest are the options used to create a new bucket
 type NewBucketRequest struct {
 	Name     string `json:"name"`
 	TeamUUID string `json:"team_uuid"`
 }
 
-func (client *Client) ListBuckets() (*[]Bucket, error) {
+// ListBuckets returns all buckets for a given account
+func (client *Client) ListBuckets() ([]Bucket, error) {
 	var buckets = []Bucket{}
 
 	content, err := client.Get("buckets")
 	if err != nil {
-		return &buckets, err
+		return buckets, err
 	}
 
 	err = unmarshal(content, &buckets)
-	return &buckets, err
+	return buckets, err
 }
 
-func (client *Client) GetBucket(bucketKey string) (*Bucket, error) {
+// GetBucket fetches the details for a single bucket specified by the Bucket Key
+func (client *Client) GetBucket(bucketKey string) (Bucket, error) {
 	var bucket = Bucket{}
 
 	path := fmt.Sprintf("buckets/%s", bucketKey)
 	content, err := client.Get(path)
 	if err != nil {
-		return &bucket, err
+		return bucket, err
 	}
 
 	err = unmarshal(content, &bucket)
-	return &bucket, err
+	return bucket, err
 }
 
-func (client *Client) NewBucket(newBucketRequest *NewBucketRequest) (*Bucket, error) {
+// NewBucket creates a new Runscope bucket
+func (client *Client) NewBucket(newBucketRequest *NewBucketRequest) (Bucket, error) {
 	var bucket = Bucket{}
 
 	data, err := json.Marshal(newBucketRequest)
 	if err != nil {
-		return &bucket, err
+		return bucket, err
 	}
 
 	content, err := client.Post("buckets", data)
 	if err != nil {
-		return &bucket, err
+		return bucket, err
 	}
 
 	err = unmarshal(content, &bucket)
-	return &bucket, err
+	return bucket, err
 }
 
+// DeleteBucket removes a bucket from the account
 func (client *Client) DeleteBucket(bucketKey string) error {
 	path := fmt.Sprintf("buckets/%s", bucketKey)
 	return client.Delete(path)

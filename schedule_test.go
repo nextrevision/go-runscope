@@ -32,7 +32,7 @@ func TestListSchedules(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Schedule{
+	want := []Schedule{
 		Schedule{
 			ID:            "084e6df7-9165-46d2-9e1c-b87ccfc53d18",
 			EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
@@ -75,7 +75,7 @@ func TestGetSchedule(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Schedule{
+	want := Schedule{
 		ID:            "084e6df7-9165-46d2-9e1c-b87ccfc53d18",
 		Note:          "Staging Environment",
 		EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
@@ -96,7 +96,7 @@ func TestNewSchedule(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/schedules"
-	request := &Schedule{
+	request := Schedule{
 		Interval:      "6h",
 		EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
 	}
@@ -114,7 +114,7 @@ func TestNewSchedule(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Schedule{
+	want := Schedule{
 		ID:            "084e6df7-9165-46d2-9e1c-b87ccfc53d18",
 		EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
 		Interval:      "6h",
@@ -134,7 +134,7 @@ func TestUpdateSchedule(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/schedules/1"
-	request := &Schedule{
+	request := Schedule{
 		ID:            "084e6df7-9165-46d2-9e1c-b87ccfc53d18",
 		EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
 		Interval:      "12h",
@@ -152,7 +152,7 @@ func TestUpdateSchedule(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Schedule{
+	want := Schedule{
 		ID:            "084e6df7-9165-46d2-9e1c-b87ccfc53d18",
 		EnvironmentID: "1eeb3695-5d0f-467c-9d51-8b773dce29ba",
 		Interval:      "12h",

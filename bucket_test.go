@@ -42,7 +42,7 @@ func TestListBuckets(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Bucket{
+	want := []Bucket{
 		Bucket{
 			Name:      "Lucky Notebook",
 			Default:   false,
@@ -99,7 +99,7 @@ func TestGetBucket(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Bucket{
+	want := Bucket{
 		Name:      "Mobile Apps",
 		Default:   false,
 		Key:       "ov2f2tq1floq",
@@ -147,7 +147,7 @@ func TestNewBucket(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Bucket{
+	want := Bucket{
 		Name:      "Mobile Apps",
 		Default:   false,
 		Key:       "ov2f2tq1floq",

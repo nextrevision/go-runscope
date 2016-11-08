@@ -32,7 +32,7 @@ func TestListTests(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Test{
+	want := []Test{
 		Test{
 			Name:                 "My Service",
 			ID:                   "9b47981a-98fd-4dac-8f32-c05aa60b8caf",
@@ -137,7 +137,7 @@ func TestGetTest(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Test{
+	want := Test{
 		Name: "Sample Name",
 		ID:   "626a024c-f75e-4f57-82d4-104fe443c0f3",
 		CreatedBy: Person{
@@ -210,7 +210,7 @@ func TestNewTest(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests"
-	request := &NewTestRequest{
+	request := NewTestRequest{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
@@ -225,7 +225,7 @@ func TestNewTest(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Test{
+	want := Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
@@ -244,7 +244,7 @@ func TestUpdateTest(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1"
-	request := &UpdateTestRequest{
+	request := UpdateTestRequest{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}
@@ -259,7 +259,7 @@ func TestUpdateTest(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Test{
+	want := Test{
 		Name:        "Sample Test",
 		Description: "A new sample test",
 	}

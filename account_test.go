@@ -32,7 +32,7 @@ func TestGetAccount(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Account{
+	want := Account{
 		Name:      "Grace Hopper",
 		Email:     "grace@example.com",
 		ID:        "cf95026e-8951-4ae1-83a7-699243678490",

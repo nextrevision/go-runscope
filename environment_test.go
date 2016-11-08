@@ -60,7 +60,7 @@ func TestListTestEnvironments(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Environment{
+	want := []Environment{
 		Environment{
 			Name:            "Remote Settings",
 			ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
@@ -161,7 +161,7 @@ func TestListSharedEnvironments(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &[]Environment{
+	want := []Environment{
 		Environment{
 			Name:            "Remote Settings",
 			ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
@@ -260,7 +260,7 @@ func TestGetTestEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
@@ -357,7 +357,7 @@ func TestGetSharedEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
@@ -406,7 +406,7 @@ func TestNewTestEnvironment(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/environments"
-	request := &Environment{
+	request := Environment{
 		Name:    "Remote Settings",
 		Regions: []string{"us1"},
 		RemoteAgents: []RemoteAgent{
@@ -481,7 +481,7 @@ func TestNewTestEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
@@ -528,7 +528,7 @@ func TestNewSharedEnvironment(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/environments"
-	request := &Environment{
+	request := Environment{
 		Name:    "Remote Settings",
 		Regions: []string{"us1"},
 		RemoteAgents: []RemoteAgent{
@@ -603,7 +603,7 @@ func TestNewSharedEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
@@ -650,7 +650,7 @@ func TestUpdateTestEnvironment(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/tests/1/environments/1"
-	request := &Environment{
+	request := Environment{
 		Name:    "Remote Settings",
 		ID:      "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		Regions: []string{"us1"},
@@ -726,7 +726,7 @@ func TestUpdateTestEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
@@ -773,7 +773,7 @@ func TestUpdateSharedEnvironment(t *testing.T) {
 	defer teardown()
 
 	path := "/buckets/1/environments/1"
-	request := &Environment{
+	request := Environment{
 		Name:    "Remote Settings",
 		ID:      "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		Regions: []string{"us1"},
@@ -849,7 +849,7 @@ func TestUpdateSharedEnvironment(t *testing.T) {
     "status": "success"
   }
 }`
-	want := &Environment{
+	want := Environment{
 		Name:            "Remote Settings",
 		ID:              "f8007150-0052-482c-9d52-c3ea4042e0f5",
 		PreserveCookies: false,
