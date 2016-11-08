@@ -17,7 +17,7 @@ import "github.com/nextrevision/go-runscope"
 
 func main() {
   token := os.Getenv("RUNSCOPE_TOKEN")
-  client := runscope.NewClient(&runscope.Options{
+  client := runscope.NewClient(runscope.Options{
     Token: token,
   })
 }
@@ -31,7 +31,7 @@ if err != nil {
   ...
 }
 
-for _, bucket := range *buckets {
+for _, bucket := range buckets {
   println(bucket.Name)
 }
 ```
@@ -40,7 +40,7 @@ To list all tests in a bucket:
 
 ```
 tests, _ := client.ListTests(bucket.Key, ListTestOptions{})
-for _, test := range *tests {
+for _, test := range tests {
   println(test.Name)
 }
 ```

@@ -20,7 +20,7 @@ func setup() {
 	server = httptest.NewServer(mux)
 
 	url, _ := url.Parse(server.URL)
-	client = NewClient(&Options{
+	client = NewClient(Options{
 		Token:   "",
 		BaseURL: url.String(),
 	})

@@ -52,7 +52,7 @@ func newHTTPClient() *gorequest.SuperAgent {
 }
 
 // NewClient creates a new client for interacting with the Runscope API
-func NewClient(options *Options) *Client {
+func NewClient(options Options) *Client {
 	req := newHTTPClient()
 	if options.BaseURL == "" {
 		options.BaseURL = BaseURL
