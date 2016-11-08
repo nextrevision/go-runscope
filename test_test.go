@@ -49,7 +49,7 @@ func TestListTests(t *testing.T) {
 
 	handleGet(t, path, responseCode, responseData)
 
-	result, err := client.ListTests("1")
+	result, err := client.ListTests("1", ListTestOptions{})
 	if err != nil {
 		t.Errorf("ListTests returned error: %v", err)
 	}
