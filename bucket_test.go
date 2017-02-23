@@ -27,14 +27,18 @@ func TestListBuckets(t *testing.T) {
     },
     {
       "auth_token": null,
+      "collections_url": "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
       "default": false,
       "key": "ov2f2tqifoov",
       "auth_token": "7n7n0917-91q7-43rs-o8s4-sr31762167r0",
+      "messages_url": "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
       "name": "Mobile Apps",
       "team": {
         "name": "Mobile Team",
         "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
       },
+      "tests_url": "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+      "trigger_url": "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
       "verify_ssl": true
     }
   ],
@@ -64,6 +68,10 @@ func TestListBuckets(t *testing.T) {
 				Name: "Mobile Team",
 				UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 			},
+			CollectionsURL: "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
+			MessagesURL:    "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
+			TestsURL:       "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+			TriggerURL:     "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
 		},
 	}
 
@@ -86,13 +94,17 @@ func TestGetBucket(t *testing.T) {
 {
   "data": {
     "auth_token": null,
+    "collections_url": "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
     "default": false,
     "key": "ov2f2tq1floq",
+    "messages_url": "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
     "name": "Mobile Apps",
     "team": {
       "name": "Mobile Team",
       "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
     },
+    "tests_url": "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+    "trigger_url": "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
     "verify_ssl": true
   },
   "meta": {
@@ -109,6 +121,10 @@ func TestGetBucket(t *testing.T) {
 			Name: "Mobile Team",
 			UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 		},
+		CollectionsURL: "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
+		MessagesURL:    "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
+		TestsURL:       "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+		TriggerURL:     "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
 	}
 
 	handleGet(t, path, responseCode, responseData)
@@ -134,13 +150,17 @@ func TestNewBucket(t *testing.T) {
 {
   "data": {
     "auth_token": null,
+    "collections_url": "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
     "default": false,
     "key": "ov2f2tq1floq",
+    "messages_url": "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
     "name": "Mobile Apps",
     "team": {
       "name": "Mobile Team",
       "uuid": "7a7a0917-91d7-43ef-b8f4-fe31762167e0"
     },
+    "tests_url": "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+    "trigger_url": "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
     "verify_ssl": true
   },
   "meta": {
@@ -157,6 +177,10 @@ func TestNewBucket(t *testing.T) {
 			Name: "Mobile Team",
 			UUID: "7a7a0917-91d7-43ef-b8f4-fe31762167e0",
 		},
+		CollectionsURL: "https://api.runscope.com/buckets/ov2f2tq1floq/collection",
+		MessagesURL:    "https://api.runscope.com/buckets/ov2f2tq1floq/stream",
+		TestsURL:       "https://api.runscope.com/buckets/ov2f2tq1floq/tests",
+		TriggerURL:     "https://api.runscope.com/radar/bucket/1efd91e9-c3c0-4e68-8444-0a24bed7cc9e/trigger",
 	}
 
 	handlePost(t, path, responseCode, responseData, new(NewBucketRequest), request)

@@ -13,6 +13,11 @@ type Bucket struct {
 	Key       string `json:"key"`
 	Team      Team   `json:"team"`
 	VerifySSL bool   `json:"verify_ssl"`
+
+	CollectionsURL string `json:"collections_url"`
+	MessagesURL    string `json:"messages_url"`
+	TestsURL       string `json:"tests_url"`
+	TriggerURL     string `json:"trigger_url"`
 }
 
 // NewBucketRequest are the options used to create a new bucket
