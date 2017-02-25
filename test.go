@@ -51,6 +51,30 @@ type LastRun struct {
 	TemplateUUIDs      []string `json:"template_uuids"`
 }
 
+// TestRun represents the execution of a Test.
+type TestRun struct {
+	BucketKey       string            `json:"bucket_key"`
+	EnvironmentID   string            `json:"environment_id"`
+	EnvironmentName string            `json:"environment_name"`
+	Region          string            `json:"region"`
+	Status          string            `json:"status"`
+	TestID          string            `json:"test_id"`
+	TestName        string            `json:"test_name"`
+	TestRunID       string            `json:"test_run_id"`
+	TestRunURL      string            `json:"test_run_url"`
+	TestURL         string            `json:"test_url"`
+	URL             string            `json:"url"`
+	Variables       map[string]string `json:"variables"`
+}
+
+// TriggerResponse is returned after initiating a Test Run with a Trigger URL.
+type TriggerResult struct {
+	Runs        []TestRun `json:"runs"`
+	RunsFailed  int       `json:"runs_failed"`
+	RunsStarted int       `json:"runs_started"`
+	RunsTotal   int       `json:"runs_total"`
+}
+
 // NewTestRequest represents all parameters for creating a new test
 type NewTestRequest struct {
 	Name        string `json:"name"`
@@ -202,4 +226,25 @@ func (client *Client) ReimportTest(bucketKey string, testID string, data []byte)
 func (client *Client) DeleteTest(bucketKey string, testID string) error {
 	path := fmt.Sprintf("buckets/%s/tests/%s", bucketKey, testID)
 	return client.Delete(path)
+}
+
+// Trigger starts one or more test runs.
+//
+// Param url is of one of the forms:
+//
+// - https://api.runscope.com/radar/bucket/:trigger_id/trigger
+// - https://api.runscope.com/radar/:trigger_id/trigger?baseUrl=https://yourapihere.com&apiKey=abc123
+// - https://api.runscope.com/radar/:trigger_id/trigger?runscope_environment=:environment_uuid
+// - https://api.runscope.com/radar/bucket/:trigger_id/trigger
+func (client *Client) Trigger(url string) (TriggerResult, error) {
+	var result = TriggerResult{}
+
+	path := url[len(client.baseURL):]
+	content, err := client.Get(path)
+	if err != nil {
+		return result, err
+	}
+
+	err = unmarshal(content, &result)
+	return result, err
 }
