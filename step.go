@@ -46,7 +46,7 @@ type Assertion struct {
 type Auth struct {
 	AuthType       string `json:"auth_type"`
 	Username       string `json:"username,omitempty"`
-	Password       string `json:"username,omitempty"`
+	Password       string `json:"password,omitempty"`
 	AccessToken    string `json:"access_token,omitempty"`
 	TokenSecret    string `json:"token_secret,omitempty"`
 	ConsumerKey    string `json:"consumer_key,omitempty"`
