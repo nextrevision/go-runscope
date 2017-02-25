@@ -338,3 +338,75 @@ func TestDeleteTest(t *testing.T) {
 		t.Errorf("DeleteTest returned error: %v", err)
 	}
 }
+
+func TestTriggerTest(t *testing.T) {
+	setup()
+	defer teardown()
+
+	path := "/radar/7eb44170-0ad8-4ae2-8d6e-6d283c20b8a2/trigger"
+	responseCode := http.StatusOK
+	responseData := `
+{
+    "data": {
+        "runs": [
+            {
+                "agent": null,
+                "bucket_key": "ujy2zddfsj",
+                "region": "us1",
+                "status": "init",
+                "test_id": "2637778b-26c1-41c6-80ef-a9bb145fe8ff",
+                "test_name": "Android Integration Tests",
+                "environment_id": "ab234cdf-26c1-41c6-80ef-a9bb145fe8ff",
+                "environment_name": "Production",
+                "test_run_id": "df359b71-56d1-42f3-ab50-5e517a848ac7",
+                "test_url": "https://www.runscope.com/radar/ujy2zddfsj/2637778b-26c1-41c6-80ef-a9bb145fe8ff",
+                "test_run_url": "https://www.runscope.com/radar/ujy2zddfsj/2637778b-26c1-41c6-80ef-a9bb145fe8ff/results/df359b71-56d1-42f3-ab50-5e517a848ac7",
+                "variables": {
+                    "baseUrl": "https://staging.yourapihere.com",
+                    "accessToken": "xyzzy",
+                    "tokenSecret": "shhhhhhhh"
+                }
+            }
+        ],
+        "runs_failed": 0,
+        "runs_started": 1,
+        "runs_total": 1
+    },
+    "error": null,
+    "meta": {
+        "status": "success"
+    }
+}`
+
+	handleGet(t, path, responseCode, responseData)
+	want := TriggerResult{
+		Runs: []TestRun{
+			{
+				BucketKey:       "ujy2zddfsj",
+				Region:          "us1",
+				Status:          "init",
+				TestID:          "2637778b-26c1-41c6-80ef-a9bb145fe8ff",
+				TestName:        "Android Integration Tests",
+				EnvironmentID:   "ab234cdf-26c1-41c6-80ef-a9bb145fe8ff",
+				EnvironmentName: "Production",
+				TestRunID:       "df359b71-56d1-42f3-ab50-5e517a848ac7",
+				TestURL:         "https://www.runscope.com/radar/ujy2zddfsj/2637778b-26c1-41c6-80ef-a9bb145fe8ff",
+				TestRunURL:      "https://www.runscope.com/radar/ujy2zddfsj/2637778b-26c1-41c6-80ef-a9bb145fe8ff/results/df359b71-56d1-42f3-ab50-5e517a848ac7",
+				Variables: map[string]string{
+					"baseUrl":     "https://staging.yourapihere.com",
+					"accessToken": "xyzzy",
+					"tokenSecret": "shhhhhhhh",
+				},
+			},
+		},
+		RunsFailed:  0,
+		RunsStarted: 1,
+		RunsTotal:   1,
+	}
+
+	result, err := client.Trigger(client.baseURL + "/radar/7eb44170-0ad8-4ae2-8d6e-6d283c20b8a2/trigger")
+	if err != nil {
+		t.Errorf("TriggerTest returned error: %v", err)
+	}
+	testResponseData(t, result, want)
+}
