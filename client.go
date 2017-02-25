@@ -3,7 +3,6 @@ package runscope
 import (
 	"fmt"
 	"net/http"
-	"regexp"
 
 	"github.com/parnurzeal/gorequest"
 )
@@ -134,12 +133,8 @@ func (client *Client) Delete(path string) error {
 
 // checkStatusCode returns an error if a HTTP status code does not match 2xx
 func checkStatusCode(code int) error {
-	ok, err := regexp.MatchString("^2[0-9]{2}$", fmt.Sprintf("%d", code))
-	if err != nil {
-		return err
+	if 200 <= code && code < 300 {
+		return nil
 	}
-	if !ok {
-		return fmt.Errorf("Request did not match 2xx: %d", code)
-	}
-	return nil
+	return fmt.Errorf("Request did not match 2xx: %d", code)
 }
