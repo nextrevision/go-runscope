@@ -1,3 +1,0 @@
-package: github.com/nextrevision/go-runscope
-import:
-- package: github.com/parnurzeal/gorequest
