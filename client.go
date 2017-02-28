@@ -1,10 +1,10 @@
 package runscope
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
-
-	"github.com/parnurzeal/gorequest"
 )
 
 // BaseURL is the Runscope API URL
@@ -18,7 +18,7 @@ type Options struct {
 
 // Client is used when making requests to Runscope
 type Client struct {
-	req     *gorequest.SuperAgent
+	*http.Client
 	token   string
 	baseURL string
 }
@@ -41,23 +41,21 @@ type Meta struct {
 	Status string `json:"status"`
 }
 
-func newHTTPClient() *gorequest.SuperAgent {
-	client := gorequest.New()
-	client.Client = &http.Client{Jar: nil}
-	client.Transport = &http.Transport{
-		DisableKeepAlives: true,
+func newHTTPClient() *http.Client {
+	return &http.Client{
+		Jar:       nil,
+		Transport: &http.Transport{DisableKeepAlives: true},
 	}
-	return client
 }
 
 // NewClient creates a new client for interacting with the Runscope API
 func NewClient(options Options) *Client {
-	req := newHTTPClient()
+	client := newHTTPClient()
 	if options.BaseURL == "" {
 		options.BaseURL = BaseURL
 	}
 	return &Client{
-		req:     req,
+		Client:  client,
 		token:   options.Token,
 		baseURL: options.BaseURL,
 	}
@@ -66,68 +64,27 @@ func NewClient(options Options) *Client {
 // Get performs a HTTP GET request against the Runscope API
 func (client *Client) Get(path string) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-
-	client.req.TargetType = "json"
-	resp, body, errs := client.req.Get(url).
-		Set("Authorization", "Bearer "+client.token).
-		EndBytes()
-	if errs != nil && len(errs) > 0 {
-		return body, errs[len(errs)-1]
-	}
-
-	err := checkStatusCode(resp.StatusCode)
-	return body, err
+	return client.doRequest("GET", url, nil)
 }
 
 // Post performs a HTTP POST request against the Rusncope API
 // with a supplied payload
 func (client *Client) Post(path string, data []byte) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-
-	client.req.TargetType = "json"
-	resp, body, errs := client.req.Post(url).
-		Set("Authorization", "Bearer "+client.token).
-		Send(string(data)).
-		EndBytes()
-	if errs != nil && len(errs) > 0 {
-		return body, errs[len(errs)-1]
-	}
-
-	err := checkStatusCode(resp.StatusCode)
-	return body, err
+	return client.doRequest("POST", url, data)
 }
 
 // Put performs a HTTP PUT request against the Runscope API
 // with a supplied payload
 func (client *Client) Put(path string, data []byte) ([]byte, error) {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-
-	client.req.TargetType = "json"
-	resp, body, errs := client.req.Put(url).
-		Set("Authorization", "Bearer "+client.token).
-		Send(string(data)).
-		EndBytes()
-	if errs != nil && len(errs) > 0 {
-		return body, errs[len(errs)-1]
-	}
-
-	err := checkStatusCode(resp.StatusCode)
-	return body, err
+	return client.doRequest("PUT", url, data)
 }
 
 // Delete performs a HTTP DELETE request against the Runscope API
 func (client *Client) Delete(path string) error {
 	url := fmt.Sprintf("%s/%s", client.baseURL, path)
-
-	client.req.TargetType = "json"
-	resp, _, errs := client.req.Delete(url).
-		Set("Authorization", "Bearer "+client.token).
-		EndBytes()
-	if errs != nil && len(errs) > 0 {
-		return errs[len(errs)-1]
-	}
-
-	err := checkStatusCode(resp.StatusCode)
+	_, err := client.doRequest("DELETE", url, nil)
 	return err
 }
 
@@ -137,4 +94,37 @@ func checkStatusCode(code int) error {
 		return nil
 	}
 	return fmt.Errorf("Request did not match 2xx: %d", code)
+}
+
+func (client *Client) doRequest(method string, url string, data []byte) ([]byte, error) {
+	reqBody := bytes.NewReader(data)
+	req, err := http.NewRequest(method, url, reqBody)
+	if err != nil {
+		return nil, err
+	}
+	setHeaders(req, client.token)
+
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err = res.Body.Close()
+	}()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return body, err
+	}
+
+	err = checkStatusCode(res.StatusCode)
+	return body, err
+}
+
+func setHeaders(req *http.Request, token string) {
+	req.Header = map[string][]string{
+		"Authorization": {"Bearer " + token},
+		"Accept":        {"application/json"},
+		"Content-Type":  {"application/json"},
+	}
 }
