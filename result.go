@@ -1,6 +1,10 @@
 package runscope
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
 // Result represents the outcome of a test run
 type Result struct {
@@ -60,6 +64,25 @@ func (client *Client) ListResults(bucketKey string, testID string) ([]Result, er
 	return results, err
 }
 
+// FilterResults returns results for a given test and supplied conditions
+func (client *Client) FilterResults(bucketKey, testID string, count int64, since, before *time.Time) ([]Result, error) {
+	var results = []Result{}
+
+	filterQs, err := client.buildFilterQS(count, since, before)
+	if err != nil {
+		return nil, err
+	}
+
+	path := fmt.Sprintf("buckets/%s/tests/%s/results%s", bucketKey, testID, filterQs)
+	content, err := client.Get(path)
+	if err != nil {
+		return results, err
+	}
+
+	err = unmarshal(content, &results)
+	return results, err
+}
+
 // GetResult returns a more detail result for a result ID
 func (client *Client) GetResult(bucketKey string, testID string, testRunID string) (Result, error) {
 	var result = Result{}
@@ -77,4 +100,24 @@ func (client *Client) GetResult(bucketKey string, testID string, testRunID strin
 // GetResultLatest returns the last known result for a given test
 func (client *Client) GetResultLatest(bucketKey string, testID string) (Result, error) {
 	return client.GetResult(bucketKey, testID, "latest")
+}
+
+// Builds filter for list results (count maximum is 50 and since/before are exclusive!)
+func (client *Client) buildFilterQS(count int64, since, before *time.Time) (string, error) {
+	if since != nil && before != nil {
+		return "", errors.New("Filter parameters 'since' and 'before' are exclusive!")
+	}
+
+	if count > 50 {
+		return "", errors.New("Filter parameter 'count' has maximal value of 50!")
+	}
+
+	var qs = fmt.Sprintf("?count=%v", count)
+	if since != nil {
+		qs += fmt.Sprintf("&since=%f", unixTimestampToFloat(*since))
+	}
+	if before != nil {
+		qs += fmt.Sprintf("&before=%f", unixTimestampToFloat(*before))
+	}
+	return qs, nil
 }
