@@ -1,8 +1,12 @@
 package runscope
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestListResults(t *testing.T) {
@@ -73,6 +77,103 @@ func TestListResults(t *testing.T) {
 	result, err := client.ListResults("1", "1")
 	if err != nil {
 		t.Errorf("ListResults returned error: %v", err)
+	}
+	testResponseData(t, result, want)
+}
+
+func TestFilterResults(t *testing.T) {
+	setup()
+	defer teardown()
+
+	before := time.Now()
+
+	qs := url.Values{}
+	qs.Set("count", strconv.FormatInt(50, 10))
+	qs.Add("before", strconv.FormatFloat(unixTimestampToFloat(before), 'f', 6, 64))
+
+	// test filter exclusivity error handling
+	_, err := client.buildFilterQS(50, &before, &before)
+	if err == nil {
+		t.Fatal("TestFilterResults failed on not checking time filter exclusivity!")
+	}
+
+	// test filter maximal numer of results
+	_, err = client.buildFilterQS(100, nil, &before)
+	if err == nil {
+		t.Fatal("TestFilterResults failed on not checking maximum count!")
+	}
+
+	// valid filtering
+	filterQS, err := client.buildFilterQS(50, nil, &before)
+	if err != nil {
+		t.Errorf("TestFilterResults returned error: %v", err)
+	}
+	path := fmt.Sprintf("/buckets/1/tests/1/results%s", filterQS)
+	responseCode := http.StatusOK
+
+	//TODO: DRY since we are basically expecting same result as for ListResults
+	responseData := `
+{
+  "data": [
+    {
+      "agent": null,
+      "assertions_defined": 2,
+      "assertions_failed": 0,
+      "assertions_passed": 2,
+      "bucket_key": "6knqwmwvqpzr",
+      "finished_at": 1406061608.506811,
+      "region": "us1",
+      "requests_executed": 1,
+      "result": "pass",
+      "scripts_defined": 2,
+      "scripts_failed": 0,
+      "scripts_passed": 2,
+      "started_at": 1406036406.68105,
+      "test_run_id": "0aa48464-f89e-4596-8d60-79bc678d313f",
+      "test_run_url": "https://api.runscope.com/buckets/6knqwmwvqpzr/tests/db4cc896-2804-4520-ad06-0caf3bf216a8/results/0aa48464-f89e-4596-8d60-79bc678d313f",
+      "test_id": "db4cc896-2804-4520-ad06-0caf3bf216a8",
+      "variables_defined": 2,
+      "variables_failed": 0,
+      "variables_passed": 2,
+      "environment_id": "abcdc896-2804-4520-ad06-0caf3bf216a8",
+      "environment_name": "My Test Environment"
+    }
+  ],
+  "error": null,
+  "meta": {
+    "status": "success"
+  }
+}`
+	want := []Result{
+		Result{
+			AssertionsDefined: 2,
+			AssertionsFailed:  0,
+			AssertionsPassed:  2,
+			BucketKey:         "6knqwmwvqpzr",
+			FinishedAt:        1406061608.506811,
+			Region:            "us1",
+			RequestsExecuted:  1,
+			Result:            "pass",
+			ScriptsDefined:    2,
+			ScriptsFailed:     0,
+			ScriptsPassed:     2,
+			StartedAt:         1406036406.68105,
+			TestRunID:         "0aa48464-f89e-4596-8d60-79bc678d313f",
+			TestRunURL:        "https://api.runscope.com/buckets/6knqwmwvqpzr/tests/db4cc896-2804-4520-ad06-0caf3bf216a8/results/0aa48464-f89e-4596-8d60-79bc678d313f",
+			TestID:            "db4cc896-2804-4520-ad06-0caf3bf216a8",
+			VariablesDefined:  2,
+			VariablesFailed:   0,
+			VariablesPassed:   2,
+			EnvironmentID:     "abcdc896-2804-4520-ad06-0caf3bf216a8",
+			EnvironmentName:   "My Test Environment",
+		},
+	}
+
+	handleGetWitQueryString(t, path, qs, responseCode, responseData)
+
+	result, err := client.FilterResults("1", "1", 50, nil, &before)
+	if err != nil {
+		t.Errorf("TestFilterResults returned error: %v", err)
 	}
 	testResponseData(t, result, want)
 }
