@@ -36,6 +36,26 @@ func handleGet(t *testing.T, path string, code int, data string) {
 	})
 }
 
+func handleGetWitQueryString(t *testing.T, path string, qs url.Values, code int, data string) {
+	// strip query string from path to allow matching
+	u, _ := url.Parse(path)
+	if u.RawQuery != "" {
+		path = u.Path
+	}
+
+	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		if !reflect.DeepEqual(qs, r.URL.Query()) {
+			t.Errorf("Request expect this query string parameters: %+v", qs)
+		}
+
+		if r.Method != "GET" {
+			t.Errorf("Request method: %v, want %v", r.Method, "GET")
+		}
+		w.WriteHeader(code)
+		fmt.Fprint(w, data)
+	})
+}
+
 func handlePost(t *testing.T, path string, code int, data string, iface interface{}, req interface{}) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
